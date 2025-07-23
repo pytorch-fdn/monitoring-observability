@@ -48,8 +48,8 @@ jobs:
           # (oxsecurity/megalinter#2699).
           TERRAFORM_TFLINT_UNSECURED_ENV_VARIABLES: GITHUB_TOKEN
 
-      - name: Upload MegaLinter scan results to GitHub Security tab
-        if: success() || failure()
-        uses: github/codeql-action/upload-sarif@4e828ff8d448a8a6e532957b1811f387a63867e8 # v3.29.4
-        with:
-          sarif_file: 'megalinter-reports/megalinter-report.sarif'
+      #- name: Upload MegaLinter scan results to GitHub Security tab
+      #  if: success() || failure()
+      #  uses: github/codeql-action/upload-sarif@4e828ff8d448a8a6e532957b1811f387a63867e8 # v3.29.4
+      #  with:
+      #    sarif_file: 'megalinter-reports/megalinter-report.sarif'
