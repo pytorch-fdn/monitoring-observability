@@ -1,0 +1,27 @@
+name: "OpenTofu Plan"
+
+on:
+  - pull_request
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  opentofu_plan:
+    name: "OpenTofu Plan"
+    strategy:
+      matrix:
+        environment:
+          - dev
+          - prod
+    uses: LF-Engineering/lfx-cloudops-misc/.github/workflows/lfx-opentofu-plan.yml@main
+    with:
+      environment: ${{ matrix.environment }}
+      opentofu_backend_config: |
+        bucket=lfx-terraform-state-<project_name>
+        dynamodb_table=lfx-terraform-state-<project_name>
+    secrets:
+      env_secret: |
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}

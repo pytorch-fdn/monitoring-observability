@@ -1,0 +1,28 @@
+---
+# Copyright The Linux Foundation and each contributor.
+# SPDX-License-Identifier: MIT
+GITHUB_COMMENT_REPORTER: false
+SARIF_REPORTER: true
+DISABLE_LINTERS:
+  # We aren't publishing a module; these are just build dependencies.
+  - JSON_NPM_PACKAGE_JSON_LINT
+  # False positive file detection.
+  - RUBY_RUBOCOP
+  # cspell is laughably bad at code/comments/etc.
+  - SPELL_CSPELL
+  # Link checking more likely to cause false positives than be useful for us.
+  - SPELL_LYCHEE
+  # See oxsecurity/megalinter#3244 and tenable/terrascan#1036
+  - TERRAFORM_TERRASCAN
+  # yamllint is sufficient for us.
+  - YAML_PRETTIER
+DISABLE_ERRORS_LINTERS:
+  # These are informative but don't need to break the build.
+  - COPYPASTE_JSCPD
+  # We should work through these another time.
+  - REPOSITORY_KICS
+  - REPOSITORY_TRIVY
+JAVASCRIPT_DEFAULT_STYLE: prettier
+REPOSITORY_TRIVY_SBOM_ARGUMENTS: "--format spdx-json"
+REPOSITORY_TRIVY_SBOM_COMMAND_REMOVE_ARGUMENTS: "--format cyclonedx"
+TERRAFORM_TERRAFORM_FMT_DISABLE_ERRORS: false

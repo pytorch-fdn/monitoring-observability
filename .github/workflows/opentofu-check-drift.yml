@@ -1,0 +1,35 @@
+---
+# Copyright The Linux Foundation and each contributor.
+# SPDX-License-Identifier: MIT
+
+name: "OpenTofu Check Drift"
+
+on:
+  schedule:
+    # Runs at 9:00 AM PST every Tuesday
+    # Note: GitHub Actions uses UTC time
+    # 9:00 AM PST = 17:00 UTC (during standard time)
+    - cron: '0 17 * * 2'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  opentofu_check_drift:
+    name: "OpenTofu Check Drift"
+    strategy:
+      matrix:
+        environment:
+          - dev
+          - prod
+    uses: LF-Engineering/lfx-cloudops-misc/.github/workflows/lfx-opentofu-check.yml@main
+    with:
+      environment: ${{ matrix.environment }}
+      opentofu_backend_config: |
+        bucket=lfx-terraform-state-<project_name>
+        dynamodb_table=lfx-terraform-state-<project_name>
+    secrets:
+      env_secret: |
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}

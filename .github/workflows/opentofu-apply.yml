@@ -1,0 +1,37 @@
+name: "OpenTofu Apply"
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  opentofu_apply_dev:
+    name: "OpenTofu Apply - Dev"
+    uses: LF-Engineering/lfx-cloudops-misc/.github/workflows/lfx-opentofu-apply.yml@main
+    with:
+      environment: dev
+      opentofu_backend_config: |
+        bucket=lfx-terraform-state-<project_name>
+        dynamodb_table=lfx-terraform-state-<project_name>
+    secrets:
+      env_secret: |
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+  opentofu_apply_prod:
+    name: "OpenTofu Apply - Prod"
+    needs: opentofu_apply_dev
+    uses: LF-Engineering/lfx-cloudops-misc/.github/workflows/lfx-opentofu-apply.yml@main
+    with:
+      environment: prod
+      opentofu_backend_config: |
+        bucket=lfx-terraform-state-<project_name>
+        dynamodb_table=lfx-terraform-state-<project_name>
+    secrets:
+      env_secret: |
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}

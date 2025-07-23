@@ -1,0 +1,55 @@
+---
+# Copyright The Linux Foundation and each contributor.
+# SPDX-License-Identifier: MIT
+
+# Allow unpinned actions (no SHA) for both MegaLinter and codeql-action.
+# kics-scan disable=555ab8f9-2001-455e-a077-f2d0f41e2fb9
+
+name: MegaLinter
+
+"on":
+  pull_request: null
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  megalinter:
+    name: MegaLinter
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      # Git Checkout
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # MegaLinter
+      - name: MegaLinter
+        id: ml
+        # Use "cupcake" slim flavor which supports both Terraform and
+        # Javascript.
+        uses: oxsecurity/megalinter/flavors/cupcake@v7
+        env:
+          # All available variables are described in documentation
+          # https://megalinter.io/configuration/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # tflint needs the token for `init` fetching modules
+          # (oxsecurity/megalinter#2699).
+          TERRAFORM_TFLINT_UNSECURED_ENV_VARIABLES: GITHUB_TOKEN
+
+      - name: Upload MegaLinter scan results to GitHub Security tab
+        if: success() || failure()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'megalinter-reports/megalinter-report.sarif'

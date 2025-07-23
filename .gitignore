@@ -1,0 +1,11 @@
+.terraform
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+terraform.tfplan
+tofu.tfplan
+crash.log
+go.sum
+go.mod
+pkg

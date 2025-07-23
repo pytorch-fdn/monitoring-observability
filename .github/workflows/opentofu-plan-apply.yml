@@ -1,0 +1,45 @@
+---
+# Copyright The Linux Foundation and each contributor.
+# SPDX-License-Identifier: MIT
+
+name: "OpenTofu Plan and Apply"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+concurrency:
+  # Automatically cancel any previous plan workflows in the same PR for all
+  # stages.
+  #
+  # Note: this does not protect against failed runs due to lock contention by
+  # multiple PRs running plan at the same time as each other, or at the same
+  # time as an apply. This is intentional, as we don't want PRs cancelling each
+  # others pending jobs, or PRs canceling a pending apply.
+  group: ${{ github.ref }}-${{ inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  opentofu_plan:
+    name: "OpenTofu Plan on Env: ${{ inputs.environment }}"
+    uses: LF-Engineering/lfx-cloudops-misc/.github/workflows/lfx-opentofu-plan.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      opentofu_backend_config: |
+        bucket=lfx-terraform-state-<project_name>
+        dynamodb_table=lfx-terraform-state-<project_name>
+    secrets:
+      env_secret: |
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
