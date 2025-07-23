@@ -44,8 +44,8 @@ provider "aws" {
 # State storage.
 terraform {
   backend "s3" {
-    region         = "us-east-2"
-    key            = "terraform.tfstate"
+    region = "us-east-2"
+    key    = "terraform.tfstate"
   }
   required_version = "~> 1.0"
 }
