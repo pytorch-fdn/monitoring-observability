@@ -2,7 +2,7 @@
 # Copyright The Linux Foundation and each contributor.
 # SPDX-License-Identifier: MIT
 GITHUB_COMMENT_REPORTER: false
-SARIF_REPORTER: true
+SARIF_REPORTER: false
 DISABLE_LINTERS:
   # We aren't publishing a module; these are just build dependencies.
   - JSON_NPM_PACKAGE_JSON_LINT

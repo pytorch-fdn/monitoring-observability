@@ -6,7 +6,7 @@ variable "run_manually" {
 
 variable "environment_tag" {
   description = "Mapping of environment names to their corresponding tags"
-    type        = map(string)
+  type        = map(string)
   default = {
     dev     = "development"
     prod    = "production"

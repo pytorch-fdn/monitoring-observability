@@ -1,7 +1,7 @@
 # IAM role to assume for manual Terraform runs using Makefile
 variable "provider_assume_role" {
   description = "ARN of the IAM role to assume for manual Terraform runs using Makefile"
-    type        = map(string)
+  type        = map(string)
   default = {
     prod = "arn:aws:iam::391835788720:role/lfit-sysadmins-mfa"
   }
