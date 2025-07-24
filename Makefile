@@ -11,7 +11,7 @@ export DD_APP_KEY=  $(shell pass sysadmin/keys/datadog/pytorch/appkeys/terraform
 
 export PROJECT_NAME 	   ?= "pytorch"
 
-.PHONY: error init refresh plan apply clean
+.PHONY: error init refresh plan apply clean all test
 error:
 	@echo "Valid targets: init refresh plan apply clean"
 	@exit 2
@@ -52,5 +52,9 @@ apply:
 
 clean:
 	rm -vf tofu.tfplan
-
+test:
+	tofu fmt
+	tflint
+all:
+	@echo "This is a checkmake required phony target"
 # vim: ai noet ts=4 sw=4
