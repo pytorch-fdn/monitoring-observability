@@ -2,7 +2,7 @@ data "aws_caller_identity" "pytorch" {}
 # Datadog integration for AWS
 # This integration allows Datadog to monitor AWS resources and services.
 resource "datadog_integration_aws_account" "pytorch" {
-  aws_account_id = data.aws_caller_identity.pytorch.account_ida
+  aws_account_id = data.aws_caller_identity.pytorch.account_id
   aws_partition  = "aws"
   aws_regions {
     include_all = true
