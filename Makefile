@@ -1,15 +1,13 @@
 # Set this to true to run Terraform manually
 export TF_VAR_run_manually := true
-export TF_VAR_cloudflare_api_token := $(shell pass show sysadmin/services/cloudflare/pytorch/api_token)
-export TF_VAR_cloudflare_discuss_tunnel_secret := $(shell pass show sysadmin/services/cloudflare/pytorch/discuss_tunnel_secret)
 
-export TF_VAR_datadog_api_key = $(shell pass show sysadmin/keys/datadog/pytorch/apikey)
-export TF_VAR_datadog_app_key = $(shell pass show sysadmin/keys/datadog/pytorch/appkeys/terraform)
+export TF_VAR_datadog_api_key = $(shell op item get DD_API_KEY --fields notesPlain --account pytorch.1password.com)
+export TF_VAR_datadog_app_key = $(shell op item get DD_APP_KEY --fields notesPlain --account pytorch.1password.com)
 
-export DD_API_KEY = $(shell pass sysadmin/keys/datadog/pytorch/apikey)
-export DD_APP_KEY=  $(shell pass sysadmin/keys/datadog/pytorch/appkeys/terraform)
+export DD_API_KEY = $(shell op item get DD_API_KEY --fields notesPlain --account pytorch.1password.com)
+export DD_APP_KEY=  $(shell op item get DD_APP_KEY --fields notesPlain --account pytorch.1password.com)
 
-export PROJECT_NAME 	   ?= "pytorch"
+export PROJECT_NAME 	   ?= "pytorch-datadog"
 
 .PHONY: error init refresh plan apply clean all test
 error:
