@@ -19,8 +19,8 @@ jobs:
     with:
       environment: ${{ matrix.environment }}
       opentofu_backend_config: |
-        bucket=opentofu-state-pytorch
-        dynamodb_table=opentofu-state-pytorch
+        bucket=opentofu-state-pytorch-datadog
+        dynamodb_table=opentofu-state-pytorch-datadog
     secrets:
       env_secret: |
         GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
