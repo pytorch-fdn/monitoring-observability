@@ -1,51 +1,66 @@
-# Change role based on terraform workspace
+# IAM role to assume for manual Terraform runs using Makefile
 variable "provider_assume_role" {
-  default = {
-    prod = "arn:aws:iam::716487311010:role/lfit-sysadmins-mfa" # prdct-prod
-    dev  = "arn:aws:iam::395594542180:role/lfit-sysadmins-mfa" # prdct-dev
-  }
-}
-
-# Roles to assume to Github Actions
-variable "provider_assume_role_ci" {
-  description = "ARN for PRDCT AWS accounts depending on Environment"
+  description = "ARN of the IAM role to assume for manual Terraform runs using Makefile"
   type        = map(string)
   default = {
-    prod = "arn:aws:iam::716487311010:role/terraform-deploy-oidc" # prdct-prod
-    dev  = "arn:aws:iam::395594542180:role/terraform-deploy-oidc" # prdct-dev
+    prod = "arn:aws:iam::391835788720:role/lfit-sysadmins-mfa"
   }
 }
 
-# Pick the right IAM role if run_manually is set
+# Roles to assume for Github Actions
+variable "provider_assume_role_ci" {
+  description = "ARN of the IAM role to assume for CI/CD, depending on the environment"
+  type        = map(string)
+  default = {
+    prod = "arn:aws:iam::391835788720:role/terraform-deploy-oidc"
+  }
+}
+
+# Pick the right IAM role based on the run_manually flag
 locals {
-  prdct_role = var.run_manually ? var.provider_assume_role[terraform.workspace] : var.provider_assume_role_ci[terraform.workspace]
+  role_to_assume = var.run_manually ? var.provider_assume_role[terraform.workspace] : var.provider_assume_role_ci[terraform.workspace]
 }
 
 # Default AWS provider.
 provider "aws" {
-  region = "us-east-2"
+  region = "us-west-2"
 
   assume_role {
-    role_arn     = local.prdct_role
+    role_arn     = local.role_to_assume
     session_name = "terraform"
   }
 
   default_tags {
     tags = {
-      env     = "${var.environment_tag[terraform.workspace]}"
-      product = "datalake"
-      owner   = "CloudOps"
-      repo    = "LF-Engineering/lfx-dbaas-terraform"
+      env     = var.environment_tag[terraform.workspace]
+      product = "pytorch"
+      owner   = "LF CloudOps"
+      repo    = "pytorch-fdn/datadog-terraform"
     }
   }
+}
 
+provider "datadog" {
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
 }
 
 # State storage.
 terraform {
   backend "s3" {
-    region         = "us-east-2"
-    key            = "terraform.tfstate"
+    region = "us-west-2"
+    key    = "terraform.tfstate"
   }
-  required_version = "~> 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "< 6.0"
+    }
+    datadog = {
+      source  = "DataDog/datadog"
+      version = "3.54.0"
+    }
+
+  }
+  required_version = "~> 1.1"
 }
