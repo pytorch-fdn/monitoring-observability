@@ -1,0 +1,37 @@
+---
+# Copyright The Linux Foundation and each contributor.
+# SPDX-License-Identifier: MIT
+
+name: "OpenTofu Check Schedule"
+
+on:
+  schedule:
+    # Runs at 9:00 AM PST every Tuesday
+    # Note: GitHub Actions uses UTC time
+    # 9:00 AM PST = 17:00 UTC (during standard time)
+    - cron: '0 17 * * 2'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  opentofu_check_drift:
+    name: "OpenTofu Check - ${{ matrix.environment }}"
+    strategy:
+      matrix:
+        environment:
+          - prod
+    uses: ./.github/workflows/opentofu-check.yml
+    with:
+      environment: ${{ matrix.environment }}
+      opentofu_workspace: ${{ matrix.environment }}
+      oidc_role_arn: 'arn:aws:iam::391835788720:role/terraform-deploy-oidc'
+      oidc_audience: 'sts.amazonaws.com'
+    secrets:
+      env_secret: |
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+      opentofu_secret_variables: |
+        datadog_api_key = "${{ secrets.DD_API_KEY }}"
+        datadog_app_key = "${{ secrets.DD_APP_KEY }}"

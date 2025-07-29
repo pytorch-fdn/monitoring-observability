@@ -1,9 +1,8 @@
-name: "Terraform Apply"
+name: "Tofu Apply"
 
 on:
   push:
     branches:
-      - master
       - main
 
 permissions:
