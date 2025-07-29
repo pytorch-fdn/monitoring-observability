@@ -29,9 +29,10 @@ resource "datadog_integration_slack_channel" "pytorch-infra-alerts" {
   channel_name = "#pytorch-infra-alerts"
 
   display {
-    message  = true
-    notified = true
-    snapshot = true
-    tags     = true
+    message      = true
+    notified     = true
+    snapshot     = true
+    tags         = true
+    mute_buttons = true
   }
 }
