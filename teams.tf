@@ -22,16 +22,16 @@ variable "teams" {
       description = "AMD Staff Members"
       name        = "AMD Staff"
       handle      = "amd-staff"
-      nvidia-staff = {
-        description = "Nvidia Staff Members"
-        name        = "Nvidia Staff"
-        handle      = "nvidia-staff"
-      },
-      ibm-staff = {
-        description = "IBM Staff Members"
-        name        = "IBM Staff"
-        handle      = "IBM-staff"
-      }
+    },
+    nvidia-staff = {
+      description = "Nvidia Staff Members"
+      name        = "Nvidia Staff"
+      handle      = "nvidia-staff"
+    },
+    ibm-staff = {
+      description = "IBM Staff Members"
+      name        = "IBM Staff"
+      handle      = "IBM-staff"
     }
   }
 }
