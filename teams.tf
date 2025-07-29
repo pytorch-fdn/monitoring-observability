@@ -31,7 +31,7 @@ variable "teams" {
     ibm-staff = {
       description = "IBM Staff Members"
       name        = "IBM Staff"
-      handle      = "IBM-staff"
+      handle      = "ibm-staff"
     }
   }
 }
