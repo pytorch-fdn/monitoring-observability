@@ -16,7 +16,12 @@ resource "datadog_integration_aws_account" "pytorch" {
     lambda_forwarder {}
   }
   metrics_config {
-    namespace_filters {}
+    namespace_filters {
+      exclude_only = [
+        "AWS/SQS",
+        "AWS/ElasticMapReduce",
+      ]
+    }
   }
   resources_config {}
   traces_config {
