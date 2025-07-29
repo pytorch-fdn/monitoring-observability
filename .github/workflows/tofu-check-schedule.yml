@@ -35,3 +35,4 @@ jobs:
       opentofu_secret_variables: |
         datadog_api_key = "${{ secrets.DD_API_KEY }}"
         datadog_app_key = "${{ secrets.DD_APP_KEY }}"
+        incident_io_bearer = "${{ secrets.INCIDENT_IO_BEARER }}"

@@ -53,5 +53,3 @@ EOT
 The number of visible messages in `{{queuename.name}}` is outside of the typical range.
 EOT
 }
-
-
