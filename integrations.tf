@@ -50,7 +50,7 @@ resource "datadog_webhook" "lf-incident-io" {
   encode_as = "json"
 
   custom_headers = jsonencode({ "Authorization" = "Bearer ${var.incident_io_bearer}  " })
-  payload = <<-EOT
+  payload        = <<-EOT
 {
   "alert_transition": "$ALERT_TRANSITION",
   "deduplication_key": "$AGGREG_KEY-$ALERT_CYCLE_KEY",
