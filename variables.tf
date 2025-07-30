@@ -25,3 +25,9 @@ variable "datadog_app_key" {
   type        = string
   sensitive   = true
 }
+
+variable "incident_io_bearer" {
+  description = "Bearer token for Incident.io webhook authorization"
+  type        = string
+  sensitive   = true
+}

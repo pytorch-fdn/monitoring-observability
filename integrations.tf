@@ -41,3 +41,42 @@ resource "datadog_integration_slack_channel" "pytorch-infra-alerts" {
     mute_buttons = true
   }
 }
+
+# Create a new Datadog webhook
+
+resource "datadog_webhook" "lf-incident-io" {
+  name      = "lf-inceident-io"
+  url       = "https://api.incident.io/v2/alert_events/datadog/01JKTRSFTE6H2SR4AFM4VGWZFN"
+  encode_as = "json"
+
+  custom_headers = jsonencode({ "Authorization" = "Bearer ${var.incident_io_bearer}  " })
+  payload = jsonencode({
+    alert_transition  = "$ALERT_TRANSITION",
+    deduplication_key = "$AGGREG_KEY-$ALERT_CYCLE_KEY",
+    title             = "$EVENT_TITLE",
+    description       = "$EVENT_MSG",
+    source_url        = "$LINK",
+    metadata = {
+      id             = "$ID",
+      alert_metric   = "$ALERT_METRIC",
+      alert_query    = "$ALERT_QUERY",
+      alert_scope    = "$ALERT_SCOPE",
+      alert_status   = "$ALERT_STATUS",
+      alert_title    = "$ALERT_TITLE",
+      alert_type     = "$ALERT_TYPE",
+      alert_url      = "$LINK",
+      alert_priority = "$ALERT_PRIORITY",
+      date           = "$DATE",
+      event_type     = "$EVENT_TYPE",
+      hostname       = "$HOSTNAME",
+      last_updated   = "$LAST_UPDATED",
+      logs_sample    = "$LOGS_SAMPLE",
+      org = {
+        id   = "$ORG_ID",
+        name = "$ORG_NAME"
+      },
+      snapshot_url = "$SNAPSHOT",
+      tags         = "$TAGS"
+    }
+  })
+}
