@@ -109,5 +109,8 @@ We've detected that the GitHub API rate limit usage is higher than usual. This c
 
 Review the rate limit metrics as well as API call count from the ALI for each API call to see if anything unusual is occurring.
 
+@slack-PyTorch-pytorch-infra-alerts
+@slack-Linux_Foundation-pytorch-alerts
+@webhook-lf-incident-io
 EOT
 }
