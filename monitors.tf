@@ -58,3 +58,33 @@ The number of visible messages in `{{queuename.name}}` is outside of the typical
 @webhook-lf-incident-io
 EOT
 }
+
+resource "datadog_monitor" "ALI_ValidationException_Detected" {
+  include_tags        = false
+  require_full_window = false
+  monitor_thresholds {
+    critical = 0
+  }
+  name    = "ALI ValidationException Detected"
+  type    = "event-v2 alert"
+  query   = <<EOT
+events("source:amazon_sns @title:\"ALI ValidationException Detected\"").rollup("count").last("5m") > 0
+EOT
+  message = <<EOT
+# ValidationException
+
+We've detected that a ValidationException has happened in the ALI. This could
+mean the ALI is having issues scaling up runners. Perhaps test-infra release
+was recently updated which may affect this.
+
+## Action
+
+Review scale-up lambda logs in CloudWatch to triage issue and take any
+necessary action. Revert test-infra release to last known working version if
+necessary.
+
+@slack-PyTorch-pytorch-infra-alerts
+@slack-Linux_Foundation-pytorch-alerts
+@webhook-lf-incident-io
+EOT
+}
