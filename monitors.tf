@@ -88,3 +88,26 @@ necessary.
 @webhook-lf-incident-io
 EOT
 }
+
+resource "datadog_monitor" "GitHub_API_usage_unusually_high" {
+  include_tags        = false
+  require_full_window = false
+  monitor_thresholds {
+    critical = 0
+  }
+  name    = "GitHub API usage unusually high"
+  type    = "event-v2 alert"
+  query   = <<EOT
+events("source:amazon_sns @title:\"GitHub API usage unusually high\"").rollup("count").last("5m") > 0
+EOT
+  message = <<EOT
+# GitHub API usage is unusually high
+
+We've detected that the GitHub API used rate limit is higher than usual. This could be an indication of a problem in the ALI system causing higher than expected API calls.
+
+## Action
+
+Review the rate limit metrics as well as API call count from the ALI for each API call to see if anything unusual is occurring.
+
+EOT
+}
