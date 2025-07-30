@@ -103,7 +103,7 @@ EOT
   message = <<EOT
 # GitHub API usage is unusually high
 
-We've detected that the GitHub API used rate limit is higher than usual. This could be an indication of a problem in the ALI system causing higher than expected API calls.
+We've detected that the GitHub API rate limit usage is higher than usual. This could be an indication of a problem in the ALI system causing higher than expected API calls.
 
 ## Action
 
