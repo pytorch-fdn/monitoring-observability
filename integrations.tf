@@ -45,7 +45,7 @@ resource "datadog_integration_slack_channel" "pytorch-infra-alerts" {
 # Create a new Datadog webhook
 
 resource "datadog_webhook" "lf-incident-io" {
-  name      = "lf-inceident-io"
+  name      = "lf-incident-io"
   url       = "https://api.incident.io/v2/alert_events/datadog/01JKTRSFTE6H2SR4AFM4VGWZFN"
   encode_as = "json"
 
