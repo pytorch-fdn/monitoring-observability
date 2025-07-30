@@ -70,7 +70,7 @@ resource "datadog_webhook" "lf-incident-io" {
       event_type     = "$EVENT_TYPE",
       hostname       = "$HOSTNAME",
       last_updated   = "$LAST_UPDATED",
-      logs_sample    = "$LOGS_SAMPLE",
+      logs_sample    = jsondecode("$LOGS_SAMPLE"),
       org = {
         id   = "$ORG_ID",
         name = "$ORG_NAME"
