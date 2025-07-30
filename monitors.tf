@@ -9,6 +9,8 @@ resource "datadog_monitor" "ci_retry_deadletter" {
     Verify that system is able to scale up EC2 instances by checking logs.
 
     @webhook-lf-incident-io
+    @slack-PyTorch-pytorch-infra-alerts
+    @slack-Linux_Foundation-pytorch-alerts
   MSG
 
   type  = "query alert"
@@ -51,5 +53,8 @@ anomalies(
 EOT
   message  = <<EOT
 The number of visible messages in `{{queuename.name}}` is outside of the typical range.
+@slack-PyTorch-pytorch-infra-alerts
+@slack-Linux_Foundation-pytorch-alerts
+@webhook-lf-incident-io
 EOT
 }
