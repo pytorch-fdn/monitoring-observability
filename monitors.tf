@@ -28,37 +28,6 @@ resource "datadog_monitor" "ci_retry_deadletter" {
   require_full_window = false
 }
 
-
-resource "datadog_monitor" "all_queues_anomaly" {
-  evaluation_delay    = 900
-  require_full_window = false
-  monitor_thresholds {
-    critical          = 1
-    critical_recovery = 0
-    warning           = 0.9
-  }
-  monitor_threshold_windows {
-    recovery_window = "last_15m"
-    trigger_window  = "last_1d"
-  }
-  name     = "Queue **{{queuename.name}}** has a high number of visible messages"
-  type     = "query alert"
-  priority = 5
-  query    = <<EOT
-avg(last_1w):
-anomalies(
-  avg:aws.sqs.approximate_number_of_messages_visible{project:pytorch/pytorch} by {queuename,region},
-  'basic', 2, direction='both', interval=3600, alert_window='last_1d', count_default_zero='true'
-) >= 1
-EOT
-  message  = <<EOT
-The number of visible messages in `{{queuename.name}}` is outside of the typical range.
-@slack-PyTorch-pytorch-infra-alerts
-@slack-Linux_Foundation-pytorch-alerts
-@webhook-lf-incident-io
-EOT
-}
-
 resource "datadog_monitor" "ALI_ValidationException_Detected" {
   include_tags        = false
   require_full_window = false
