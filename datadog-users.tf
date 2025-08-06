@@ -3,7 +3,6 @@ variable "dd_users" {
   description = "Map of User Resources"
   type = map(object({
     email    = string
-    name     = string
     roles    = optional(list(string), [])
     disabled = optional(bool, false)
   }))
