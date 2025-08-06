@@ -1,3 +1,9 @@
+# check permissions
+data "datadog_permissions" "permissions" {}
+output "dd_permissions" {
+  description = "Datadog Permissions"
+  value       = data.datadog_permissions.permissions
+}
 # Create new role resources
 variable "dd_roles" {
   description = "Map of Role Resources"
@@ -5,7 +11,6 @@ variable "dd_roles" {
     name        = string
     permissions = optional(list(string), [])
   }))
-
   default = {
     "limited-read-write" = {
       name = "Limited Read Write"
