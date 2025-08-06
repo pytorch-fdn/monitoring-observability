@@ -13,7 +13,6 @@ variable "dd_roles" {
         # Read permissions (similar to read-only role)
         "dashboards_read",
         "monitors_read",
-        "logs_read_data",
         "logs_read_index_data",
         "logs_read_archives",
         "apm_read",
