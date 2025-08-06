@@ -27,9 +27,7 @@ variable "dd_roles" {
         "dashboards_write",
         "monitors_write",
         "synthetics_write",
-        "incidents_write",
-        "cases_write"
-      ]
+      "incidents_write"]
     }
   }
 }
