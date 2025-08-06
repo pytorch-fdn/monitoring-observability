@@ -15,7 +15,7 @@ variable "dd_users" {
       disabled = false
     },
     "tha" = {
-      email    = "thanh.ha@linuxfoundation.org"
+      email    = "tha@linuxfoundation.org"
       roles    = ["admin"]
       disabled = false
     },

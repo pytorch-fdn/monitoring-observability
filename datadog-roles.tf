@@ -25,7 +25,6 @@ variable "dd_roles" {
 
         # Additional write permissions
         "dashboards_write",
-        "dashboards_public_share",
         "notebooks_write",
         "monitors_write",
         "synthetics_write",
