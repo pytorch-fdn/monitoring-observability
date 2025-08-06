@@ -21,23 +21,24 @@ variable "dd_users" {
       name     = "Jordan Conway"
       roles    = ["admin"]
       disabled = false
-  },
+    },
     "tha" = {
       email    = "thanh.ha@linuxfoundation.org"
       roles    = ["admin"]
       disabled = false
-  },
+    },
     "rdetjens" = {
       email    = "rdetjens@linuxfoundation.org"
       roles    = ["admin"]
       disabled = false
-  },
+    },
     "rgrigar" = {
       email    = "rgrigar@linuxfoundation.org"
       roles    = ["admin"]
       disabled = false
+    }
   }
-
+}
 resource "datadog_user" "users" {
   for_each = var.dd_users
   email    = each.value.email
