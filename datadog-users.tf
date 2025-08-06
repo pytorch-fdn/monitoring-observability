@@ -16,13 +16,31 @@ variable "dd_users" {
     #   roles    = ["standard"]  # roles can include: "standard", "admin", "read_only"
     #   disabled = false
     # }
+    "jconway" = {
+      email    = "jconway@linuxfoundation.org"
+      name     = "Jordan Conway"
+      roles    = ["admin"]
+      disabled = false
+  },
+    "tha" = {
+      email    = "thanh.ha@linuxfoundation.org"
+      roles    = ["admin"]
+      disabled = false
+  },
+    "rdetjens" = {
+      email    = "rdetjens@linuxfoundation.org"
+      roles    = ["admin"]
+      disabled = false
+  },
+    "rgrigar" = {
+      email    = "rgrigar@linuxfoundation.org"
+      roles    = ["admin"]
+      disabled = false
   }
-}
 
 resource "datadog_user" "users" {
   for_each = var.dd_users
   email    = each.value.email
-  name     = each.value.name
   roles    = each.value.roles
   disabled = each.value.disabled
 }

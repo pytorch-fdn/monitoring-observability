@@ -7,6 +7,33 @@ variable "dd_roles" {
   }))
 
   default = {
+    "custom-read-write" = {
+      name = "Custom Read Write"
+      permissions = [
+        # Read permissions (similar to read-only role)
+        "dashboards_read",
+        "monitors_read",
+        "logs_read_data",
+        "logs_read_index_data",
+        "logs_read_archives",
+        "apm_read",
+        "metrics_read",
+        "synthetics_read",
+        "incidents_read",
+        "cases_read",
+        "notebooks_read",
+        
+        # Additional write permissions
+        "dashboards_write",
+        "dashboards_public_share",
+        "notebooks_write",
+        "monitors_write",
+        "synthetics_write",
+        "incidents_write",
+        "cases_write"
+      ]
+    }
+    
     # Example role configuration - replace with actual roles
     # "custom-readonly" = {
     #   name        = "Custom Read Only"
