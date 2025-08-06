@@ -9,13 +9,6 @@ variable "dd_users" {
   }))
 
   default = {
-    # Example user configuration - replace with actual users
-    # "example-user" = {
-    #   email    = "user@example.com"
-    #   name     = "Example User"
-    #   roles    = ["standard"]  # roles can include: "standard", "admin", "read_only"
-    #   disabled = false
-    # }
     "jconway" = {
       email    = "jconway@linuxfoundation.org"
       name     = "Jordan Conway"

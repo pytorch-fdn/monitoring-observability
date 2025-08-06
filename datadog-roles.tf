@@ -33,25 +33,6 @@ variable "dd_roles" {
         "cases_write"
       ]
     }
-
-    # Example role configuration - replace with actual roles
-    # "custom-readonly" = {
-    #   name        = "Custom Read Only"
-    #   permissions = [
-    #     "dashboards_read",
-    #     "monitors_read",
-    #     "logs_read_data"
-    #   ]
-    # },
-    # "custom-admin" = {
-    #   name        = "Custom Admin"
-    #   permissions = [
-    #     "admin",
-    #     "dashboards_write",
-    #     "monitors_write",
-    #     "logs_write_exclusion_filters"
-    #   ]
-    # }
   }
 }
 
