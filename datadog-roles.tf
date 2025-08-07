@@ -21,11 +21,9 @@ locals {
         data.datadog_permissions.permissions.logs_read_data,
         data.datadog_permissions.permissions.logs_read_index_data,
         data.datadog_permissions.permissions.logs_read_archives,
-        data.datadog_permissions.permissions.metrics_read,
         data.datadog_permissions.permissions.synthetics_read,
-        data.datadog_permissions.permissions.incidents_read,
         data.datadog_permissions.permissions.cases_read,
-        data.datadog_permissions.permissions.notebooks_read,
+        data.datadog_permissions.permissions.audit_logs_read,
 
         # Additional write permissions
         data.datadog_permissions.permissions.dashboards_write,
@@ -34,7 +32,7 @@ locals {
         data.datadog_permissions.permissions.synthetics_write,
         data.datadog_permissions.permissions.cases_write,
         data.datadog_permissions.permissions.notebooks_write,
-        data.datadog_permissions.permissions.incident_write,
+        data.datadog_permissions.permissions.incident_write
       ]
     }
   }
