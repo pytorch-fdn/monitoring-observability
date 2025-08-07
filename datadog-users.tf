@@ -1,3 +1,17 @@
+# Source a role
+data "datadog_role" "admin_role" {
+  filter = "Datadog Admin Role"
+}
+
+data "datadog_role" "ro_role" {
+  filter = "Datadog Read Only Role"
+}
+data "datadog_role" "standard_role" {
+  filter = "Datadog Standard Role"
+}
+
+
+
 # Create new user resources
 variable "dd_users" {
   description = "Map of User Resources"
@@ -10,22 +24,22 @@ variable "dd_users" {
   default = {
     "jconway" = {
       email    = "jconway@linuxfoundation.org"
-      roles    = ["admin"]
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     },
     "tha" = {
-      email    = "tha@linuxfoundation.org"
-      roles    = ["admin"]
+      email    = "thanh.ha@linuxfoundation.org"
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     },
     "rdetjens" = {
       email    = "rdetjens@linuxfoundation.org"
-      roles    = ["admin"]
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     },
     "rgrigar" = {
       email    = "rgrigar@linuxfoundation.org"
-      roles    = ["admin"]
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     }
   }
