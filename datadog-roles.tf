@@ -14,8 +14,8 @@ variable "dd_roles" {
 
 locals {
   default_roles = {
-    "custom-read-write" = {
-      name = "Custom Read Write"
+    "limited-read-write" = {
+      name = "Limited Read Write"
       permissions = [
         # Read permissions (similar to read-only role)
         data.datadog_permissions.permissions.permissions["logs_read_data"],

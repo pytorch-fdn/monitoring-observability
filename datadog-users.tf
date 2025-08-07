@@ -1,3 +1,15 @@
+# Source a role
+data "datadog_role" "admin_role" {
+  filter = "Datadog Admin Role"
+}
+#Uncomment if you need to source other roles
+#data "datadog_role" "ro_role" {
+#  filter = "Datadog Read Only Role"
+#}
+#data "datadog_role" "standard_role" {
+#  filter = "Datadog Standard Role"
+#}
+
 # Create new user resources
 variable "dd_users" {
   description = "Map of User Resources"
@@ -7,31 +19,39 @@ variable "dd_users" {
     disabled = optional(bool, false)
   }))
 
-  default = {
+  default = {}
+}
+
+locals {
+  default_users = {
     "jconway" = {
       email    = "jconway@linuxfoundation.org"
-      roles    = ["admin"]
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     },
     "tha" = {
-      email    = "tha@linuxfoundation.org"
-      roles    = ["admin"]
+      email    = "thanh.ha@linuxfoundation.org"
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     },
     "rdetjens" = {
       email    = "rdetjens@linuxfoundation.org"
-      roles    = ["admin"]
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     },
     "rgrigar" = {
       email    = "rgrigar@linuxfoundation.org"
-      roles    = ["admin"]
+      roles    = [data.datadog_role.admin_role.id]
       disabled = false
     }
   }
+
+  # Merge default users with any custom users provided via variable
+  users = merge(local.default_users, var.dd_users)
 }
+
 resource "datadog_user" "users" {
-  for_each = var.dd_users
+  for_each = local.users
   email    = each.value.email
   roles    = each.value.roles
   disabled = each.value.disabled
