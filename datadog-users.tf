@@ -10,7 +10,6 @@ variable "dd_users" {
   default = {
     "jconway" = {
       email    = "jconway@linuxfoundation.org"
-      name     = "Jordan Conway"
       roles    = ["admin"]
       disabled = false
     },
