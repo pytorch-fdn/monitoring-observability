@@ -348,3 +348,90 @@ EOT
     }
   }
 }
+
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-lf" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - Linux Foundation Runners"
+  message   = <<EOT
+Detected GitHub Runner Queue - Linux Foundation Runners has jobs waiting
+unusually long for runners.
+
+{{synthetics.attributes.result.failure.message}}
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-lf.js")
+  }
+}
+
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-amd" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - AMD Runners"
+  message   = <<EOT
+Detected GitHub Runner Queue - AMD Runners has jobs waiting
+unusually long for runners.
+
+{{synthetics.attributes.result.failure.message}}
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-rocm.js")
+  }
+}
+
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-nvidia" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - Nvidia Runners"
+  message   = <<EOT
+Detected GitHub Runner Queue - Nvidia Runners has jobs waiting
+unusually long for runners.
+
+{{synthetics.attributes.result.failure.message}}
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-nvidia.js")
+  }
+}
