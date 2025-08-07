@@ -18,21 +18,21 @@ locals {
       name = "Custom Read Write"
       permissions = [
         # Read permissions (similar to read-only role)
-        data.datadog_permissions.permissions.logs_read_data,
-        data.datadog_permissions.permissions.logs_read_index_data,
-        data.datadog_permissions.permissions.logs_read_archives,
-        data.datadog_permissions.permissions.synthetics_read,
-        data.datadog_permissions.permissions.cases_read,
-        data.datadog_permissions.permissions.audit_logs_read,
+        data.datadog_permissions.permissions.permissions["logs_read_data"],
+        data.datadog_permissions.permissions.permissions["logs_read_index_data"],
+        data.datadog_permissions.permissions.permissions["logs_read_archives"],
+        data.datadog_permissions.permissions.permissions["synthetics_read"],
+        data.datadog_permissions.permissions.permissions["cases_read"],
+        data.datadog_permissions.permissions.permissions["audit_logs_read"],
 
         # Additional write permissions
-        data.datadog_permissions.permissions.dashboards_write,
-        data.datadog_permissions.permissions.dashboards_public_share,
-        data.datadog_permissions.permissions.monitors_write,
-        data.datadog_permissions.permissions.synthetics_write,
-        data.datadog_permissions.permissions.cases_write,
-        data.datadog_permissions.permissions.notebooks_write,
-        data.datadog_permissions.permissions.incident_write
+        data.datadog_permissions.permissions.permissions["dashboards_write"],
+        data.datadog_permissions.permissions.permissions["dashboards_public_share"],
+        data.datadog_permissions.permissions.permissions["monitors_write"],
+        data.datadog_permissions.permissions.permissions["synthetics_write"],
+        data.datadog_permissions.permissions.permissions["cases_write"],
+        data.datadog_permissions.permissions.permissions["notebooks_write"],
+        data.datadog_permissions.permissions.permissions["incident_write"],
       ]
     }
   }
