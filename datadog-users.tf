@@ -2,13 +2,13 @@
 data "datadog_role" "admin_role" {
   filter = "Datadog Admin Role"
 }
-
-data "datadog_role" "ro_role" {
-  filter = "Datadog Read Only Role"
-}
-data "datadog_role" "standard_role" {
-  filter = "Datadog Standard Role"
-}
+#Uncomment if you need to source other roles
+#data "datadog_role" "ro_role" {
+#  filter = "Datadog Read Only Role"
+#}
+#data "datadog_role" "standard_role" {
+#  filter = "Datadog Standard Role"
+#}
 
 # Create new user resources
 variable "dd_users" {
