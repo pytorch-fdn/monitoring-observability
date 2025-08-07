@@ -9,7 +9,11 @@ variable "dd_roles" {
     permissions = optional(list(string), [])
   }))
 
-  default = {
+  default = {}
+}
+
+locals {
+  default_roles = {
     "custom-read-write" = {
       name = "Custom Read Write"
       permissions = [
@@ -34,30 +38,14 @@ variable "dd_roles" {
         data.datadog_permissions.permissions.incidents_write.id
       ]
     }
-    
-    # Example role configuration - replace with actual roles
-    # "custom-readonly" = {
-    #   name        = "Custom Read Only"
-    #   permissions = [
-    #     data.datadog_permissions.permissions.dashboards_read.id,
-    #     data.datadog_permissions.permissions.monitors_read.id,
-    #     data.datadog_permissions.permissions.logs_read_data.id
-    #   ]
-    # },
-    # "custom-admin" = {
-    #   name        = "Custom Admin"
-    #   permissions = [
-    #     data.datadog_permissions.permissions.admin.id,
-    #     data.datadog_permissions.permissions.dashboards_write.id,
-    #     data.datadog_permissions.permissions.monitors_write.id,
-    #     data.datadog_permissions.permissions.logs_write_exclusion_filters.id
-    #   ]
-    # }
   }
+
+  # Merge default roles with any custom roles provided via variable
+  roles = merge(local.default_roles, var.dd_roles)
 }
 
 resource "datadog_role" "roles" {
-  for_each = var.dd_roles
+  for_each = local.roles
   name     = each.value.name
 
   dynamic "permission" {
