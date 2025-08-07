@@ -18,24 +18,23 @@ locals {
       name = "Custom Read Write"
       permissions = [
         # Read permissions (similar to read-only role)
-        data.datadog_permissions.permissions.dashboards_read.id,
-        data.datadog_permissions.permissions.monitors_read.id,
-        data.datadog_permissions.permissions.logs_read_index_data.id,
-        data.datadog_permissions.permissions.logs_read_archives.id,
-        data.datadog_permissions.permissions.apm_read.id,
-        data.datadog_permissions.permissions.metrics_read.id,
-        data.datadog_permissions.permissions.synthetics_read.id,
-        data.datadog_permissions.permissions.incidents_read.id,
-        data.datadog_permissions.permissions.cases_read.id,
-        data.datadog_permissions.permissions.notebooks_read.id,
+        data.datadog_permissions.permissions.logs_read_data,
+        data.datadog_permissions.permissions.logs_read_index_data,
+        data.datadog_permissions.permissions.logs_read_archives,
+        data.datadog_permissions.permissions.metrics_read,
+        data.datadog_permissions.permissions.synthetics_read,
+        data.datadog_permissions.permissions.incidents_read,
+        data.datadog_permissions.permissions.cases_read,
+        data.datadog_permissions.permissions.notebooks_read,
 
         # Additional write permissions
-        data.datadog_permissions.permissions.dashboards_write.id,
-        data.datadog_permissions.permissions.monitors_write.id,
-        data.datadog_permissions.permissions.synthetics_write.id,
-        data.datadog_permissions.permissions.cases_write.id,
-        data.datadog_permissions.permissions.notebooks_write.id,
-        data.datadog_permissions.permissions.incidents_write.id
+        data.datadog_permissions.permissions.dashboards_write,
+        data.datadog_permissions.permissions.dashboards_public_share,
+        data.datadog_permissions.permissions.monitors_write,
+        data.datadog_permissions.permissions.synthetics_write,
+        data.datadog_permissions.permissions.cases_write,
+        data.datadog_permissions.permissions.notebooks_write,
+        data.datadog_permissions.permissions.incident_write,
       ]
     }
   }
