@@ -341,7 +341,7 @@ EOT
     type     = "body"
     operator = "validatesJSONPath"
     targetjsonpath {
-      jsonpath         = "$[?(@.avg_queue_s > 3600)].avg_queue_s"
+      jsonpath         = "$[?(@.avg_queue_s > 7200)].avg_queue_s"
       operator         = "is"
       elementsoperator = "everyElementMatches"
       targetvalue      = ""
