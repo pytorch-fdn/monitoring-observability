@@ -1,8 +1,7 @@
 # PyTorch Monitoring & Observation Infrastructure
 
 This repository contains Terraform configurations for managing Datadog
-monitoring and observability infrastructure for the PyTorch project at the
-Linux Foundation.
+monitoring and observability infrastructure for the PyTorch Foundation
 
 ## Overview
 
