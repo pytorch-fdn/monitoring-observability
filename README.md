@@ -7,13 +7,14 @@ Linux Foundation.
 ## Overview
 
 This infrastructure-as-code setup manages:
+
 - **Datadog Users**: User accounts and role assignments
 - **Datadog Roles**: Custom roles with specific permissions
 - **Monitoring Resources**: Various Datadog monitoring components
 
 ## Structure
 
-```
+```text
 .
 ├── datadog-users.tf      # User management configuration
 ├── datadog-roles.tf      # Custom role definitions
@@ -38,11 +39,13 @@ The repository defines a "Custom Read Write" role (referenced as
 "Limited Read Write" in users) that provides:
 
 **Read Permissions:**
+
 - Log data and archives access
 - Synthetics monitoring view
 - Cases and audit logs access
 
 **Write Permissions:**
+
 - Dashboard creation and editing
 - Monitor management
 - Synthetics test creation
@@ -207,6 +210,7 @@ The repository uses GitHub Actions with MegaLinter for continuous deployment:
 
 All commits pushed to any branch must pass the complete MegaLinter validation
 suite:
+
 - ✅ **Terraform Formatting** (`tofu fmt`) - Code formatting with
   `tofu fmt`
 - ✅ **Terraform Linting** (`tflint`) - Best practices and error detection
@@ -222,16 +226,19 @@ Commits that fail MegaLinter checks will be rejected and cannot be merged.
 If you need to test changes locally after MegaLinter validation:
 
 1. **Initialize Terraform:**
+
    ```bash
    terraform init
    ```
 
 2. **Review the plan:**
+
    ```bash
    terraform plan
    ```
 
 3. **Apply changes (caution - this affects production):**
+
    ```bash
    terraform apply
    ```
@@ -306,13 +313,14 @@ After logging in with SSO, your access will be determined by your assigned role:
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Display name for the role |
-| `permissions` | list(string) | No | List of permission IDs (defaults to empty) |
+| `permissions` | list(string) | No | List of permission IDs (defaults empty) |
 
 ## Available Permissions
 
 Common permissions you can use in custom roles:
 
 **Read Permissions:**
+
 - `logs_read_data` - Read log data
 - `logs_read_index_data` - Read indexed logs  
 - `synthetics_read` - View synthetic tests
@@ -320,6 +328,7 @@ Common permissions you can use in custom roles:
 - `audit_logs_read` - View audit logs
 
 **Write Permissions:**
+
 - `dashboards_write` - Create/edit dashboards
 - `monitors_write` - Create/edit monitors
 - `synthetics_write` - Create/edit synthetic tests
@@ -376,6 +385,7 @@ Common permissions you can use in custom roles:
 ### Pre-commit Requirements
 
 Before committing code, ensure:
+
 - [ ] Code passes MegaLinter validation (run locally)
 - [ ] `terraform plan` runs successfully
 - [ ] Changes are tested and documented
@@ -399,6 +409,7 @@ Changes cannot be merged until all MegaLinter checks pass.
 ### MegaLinter Configuration
 
 The repository uses MegaLinter's Terraform flavor, which includes:
+
 - Multiple Terraform/OpenTofu validators
 - Security scanners (Checkov, TFSec)
 - Documentation linters
