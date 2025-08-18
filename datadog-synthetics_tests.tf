@@ -312,43 +312,6 @@ resource "datadog_synthetics_test" "pytorch-dev-discuss" {
 # GitHub Runners #
 ##################
 
-resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check" {
-  type      = "api"
-  name      = "GHA Runner Queue Check"
-  message   = <<EOT
-  Detected GitHub Runner Queue has jobs waiting unusually long for runners.
-
-  Check https://hud.pytorch.org/metrics to determine which ones.
-
-  @slack-pytorch-infra-alerts
-EOT
-  status    = "live"
-  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
-  locations = ["aws:us-west-2"]
-  options_list {
-    tick_every = 900
-  }
-  request_definition {
-    method = "GET"
-    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
-  }
-  assertion {
-    type     = "statusCode"
-    operator = "is"
-    target   = "200"
-  }
-  assertion {
-    type     = "body"
-    operator = "validatesJSONPath"
-    targetjsonpath {
-      jsonpath         = "$[?(@.avg_queue_s > 7200)].avg_queue_s"
-      operator         = "is"
-      elementsoperator = "everyElementMatches"
-      targetvalue      = ""
-    }
-  }
-}
-
 resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-lf" {
   type      = "api"
   name      = "GHA Runner Queue Check - Linux Foundation Runners"
@@ -404,6 +367,64 @@ EOT
   assertion {
     type = "javascript"
     code = file("scripts/check-long-queue-rocm.js")
+  }
+}
+
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-ibm" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - IBM Runners"
+  message   = <<EOT
+Detected GitHub Runner Queue - IBM Runners has jobs waiting
+unusually long for runners.
+
+{{synthetics.attributes.result.failure.message}}
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-s390x.js")
+  }
+}
+
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-meta" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - Meta Runners"
+  message   = <<EOT
+Detected GitHub Runner Queue - Meta Runners has jobs waiting
+unusually long for runners.
+
+{{synthetics.attributes.result.failure.message}}
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-meta.js")
   }
 }
 
