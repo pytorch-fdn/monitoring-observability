@@ -428,6 +428,35 @@ EOT
   }
 }
 
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-meta-h100" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - Meta Runners - AWS H100"
+  message   = <<EOT
+Detected GitHub Runner Queue - Meta Runners - AWS H100 has jobs waiting
+unusually long for runners.
+
+{{synthetics.attributes.result.failure.message}}
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-meta.js")
+  }
+}
+
 resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-nvidia" {
   type      = "api"
   name      = "GHA Runner Queue Check - Nvidia Runners"
