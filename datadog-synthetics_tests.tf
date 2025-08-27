@@ -319,7 +319,7 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-lf" {
 Detected GitHub Runner Queue - Linux Foundation Runners has jobs waiting
 unusually long for runners.
 
-{{synthetics.attributes.result.failure.message}}
+{{{synthetics.attributes.result.failure.message}}}
 
 Check https://hud.pytorch.org/metrics for more details.
 
@@ -348,7 +348,7 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-amd" {
 Detected GitHub Runner Queue - AMD Runners has jobs waiting
 unusually long for runners.
 
-{{synthetics.attributes.result.failure.message}}
+{{{synthetics.attributes.result.failure.message}}}
 
 Check https://hud.pytorch.org/metrics for more details.
 
@@ -377,7 +377,7 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-ibm" {
 Detected GitHub Runner Queue - IBM Runners has jobs waiting
 unusually long for runners.
 
-{{synthetics.attributes.result.failure.message}}
+{{{synthetics.attributes.result.failure.message}}}
 
 Check https://hud.pytorch.org/metrics for more details.
 
@@ -406,7 +406,7 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-meta" {
 Detected GitHub Runner Queue - Meta Runners has jobs waiting
 unusually long for runners.
 
-{{synthetics.attributes.result.failure.message}}
+{{{synthetics.attributes.result.failure.message}}}
 
 Check https://hud.pytorch.org/metrics for more details.
 
@@ -435,7 +435,7 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-meta-h100" {
 Detected GitHub Runner Queue - Meta Runners - AWS H100 has jobs waiting
 unusually long for runners.
 
-{{synthetics.attributes.result.failure.message}}
+{{{synthetics.attributes.result.failure.message}}}
 
 Check https://hud.pytorch.org/metrics for more details.
 
@@ -464,7 +464,7 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-nvidia" {
 Detected GitHub Runner Queue - Nvidia Runners has jobs waiting
 unusually long for runners.
 
-{{synthetics.attributes.result.failure.message}}
+{{{synthetics.attributes.result.failure.message}}}
 
 Check https://hud.pytorch.org/metrics for more details.
 
