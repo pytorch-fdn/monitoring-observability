@@ -5,14 +5,14 @@ const jsonData = dd.response.body;
 const parsedData = JSON.parse(jsonData);
 
 const highQueueItems = parsedData
-  .filter(item => item.machine_type.startsWith(MACHINE_TYPE_FILTER) && item.avg_queue_s > 21600)
+  .filter(item => item.machine_type === MACHINE_TYPE_FILTER && item.avg_queue_s > 21600)
   .map(item => ({ machine_type: item.machine_type, avg_queue_s: item.avg_queue_s }));
 
 if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
     .map(item => `${item.machine_type} (${item.avg_queue_s}s)`)
     .join(', ');
-  const message = `High queue detected for machine types containing ${MACHINE_TYPE_FILTER}: ${machineDetails}`;
+  const message = `High queue detected for machine type ${MACHINE_TYPE_FILTER}: ${machineDetails}`;
   console.error(message);
 }
 
