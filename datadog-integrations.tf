@@ -17,7 +17,7 @@ resource "datadog_integration_aws_account" "pytorch" {
   }
   metrics_config {
     namespace_filters {}
-    
+
     collect_cloudwatch_alarms = true
     collect_custom_metrics    = true
 
