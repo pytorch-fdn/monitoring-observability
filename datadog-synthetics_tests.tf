@@ -453,7 +453,7 @@ EOT
   }
   assertion {
     type = "javascript"
-    code = file("scripts/check-long-queue-meta.js")
+    code = file("scripts/check-long-queue-meta-h100.js")
   }
 }
 
