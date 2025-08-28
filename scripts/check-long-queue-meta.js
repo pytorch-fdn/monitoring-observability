@@ -1,5 +1,5 @@
 dd.expect(dd.response.statusCode).to.equal(200);
-const EXCLUDED_MACHINE_PATTERNS = ['.dgx.', '.rocm.', '.s390x', '^lf\\.', '^linux.aws.h100'];
+const EXCLUDED_MACHINE_PATTERNS = ['\\.dgx\\.', '\\.rocm\\.', '\\.s390x', '^lf\\.', '^linux\\.aws\\.h100'];
 const jsonData = dd.response.body;
 const parsedData = JSON.parse(jsonData);
 const highQueueItems = parsedData
