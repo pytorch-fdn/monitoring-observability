@@ -330,6 +330,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
@@ -359,6 +363,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
@@ -388,6 +396,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
@@ -417,6 +429,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
@@ -446,6 +462,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
@@ -475,6 +495,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
@@ -504,6 +528,10 @@ EOT
   locations = ["aws:us-west-2"]
   options_list {
     tick_every = 900
+    retry {
+      count    = 3
+      interval = 60000
+    }
   }
   request_definition {
     method = "GET"
