@@ -9,7 +9,7 @@ const highQueueItems = parsedData
       pattern.startsWith('^') ?
         new RegExp(pattern).test(machineType) :
         machineType.includes(pattern)
-    ) && item.avg_queue_s > 10800;
+    ) && item.avg_queue_s > 14400;
   })
   .map(item => ({ machine_type: item.machine_type, avg_queue_s: item.avg_queue_s }));
 if (highQueueItems.length > 0) {
