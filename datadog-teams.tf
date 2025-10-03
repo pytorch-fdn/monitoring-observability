@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Create new team resource
 variable "teams" {
   description = "Map of Team Resources"

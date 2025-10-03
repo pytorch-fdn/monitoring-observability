@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Set this to true to run Terraform manually
 export TF_VAR_run_manually := true
 

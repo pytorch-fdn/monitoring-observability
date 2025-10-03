@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+//
+// SPDX-License-Identifier: Apache-2.0
+
 dd.expect(dd.response.statusCode).to.equal(200);
 
 const MACHINE_TYPE_FILTER = '.dgx.';

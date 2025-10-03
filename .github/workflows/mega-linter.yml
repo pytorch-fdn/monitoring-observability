@@ -1,6 +1,9 @@
 ---
+
 # Copyright The Linux Foundation and each contributor.
-# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
 
 # Allow unpinned actions (no SHA) for both MegaLinter and codeql-action.
 # kics-scan disable=555ab8f9-2001-455e-a077-f2d0f41e2fb9

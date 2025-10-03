@@ -1,6 +1,10 @@
 ---
+
 # Copyright The Linux Foundation and each contributor.
-# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 GITHUB_COMMENT_REPORTER: false
 SARIF_REPORTER: false
 DISABLE_LINTERS:

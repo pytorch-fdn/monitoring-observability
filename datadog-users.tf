@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Source a role
 data "datadog_role" "admin_role" {
   filter = "Datadog Admin Role"
