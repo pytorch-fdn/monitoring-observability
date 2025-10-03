@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # PyTorch Monitoring & Observation Infrastructure
 
 This repository contains Terraform configurations for managing Datadog

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # IAM role to assume for manual Terraform runs using Makefile
 variable "provider_assume_role" {
   description = "ARN of the IAM role to assume for manual Terraform runs using Makefile"
