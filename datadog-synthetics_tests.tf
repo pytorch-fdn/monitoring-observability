@@ -251,7 +251,13 @@ resource "datadog_synthetics_test" "pytorch-landscape" {
 resource "datadog_synthetics_test" "pytorch-discuss" {
   type      = "api"
   name      = "discuss.pytorch.org Check"
-  message   = "Notify @webhook-lf-incident-io. Follow https://linuxfoundation.atlassian.net/wiki/spaces/IT/pages/30416028/On-call+Common+Fixes how to fix the issue."
+  message   = <<EOT
+discuss.pytorch.org is down or returning non-200 status code.
+
+{{{synthetics.attributes.result.failure.message}}}
+
+@slack-pytorch-infra-alerts
+EOT
   status    = "live"
   tags      = ["env:project", "project:pytorch", "service:discuss"]
   locations = ["aws:us-west-2"]
@@ -275,6 +281,42 @@ resource "datadog_synthetics_test" "pytorch-discuss" {
     type     = "body"
     operator = "contains"
     target   = "PyTorch Forums"
+  }
+}
+
+resource "datadog_synthetics_test" "pytorch-discourse-certificate" {
+  type    = "api"
+  subtype = "ssl"
+  name    = "SSL Certificate Validity - discuss.pytorch.org"
+  message = <<EOT
+discuss.pytorch.org TLS certificate is close to expiring.
+
+{{{synthetics.attributes.result.failure.message}}}
+
+@slack-pytorch-infra-alerts
+EOT
+  status  = "live"
+  tags = [
+    "env:project",
+    "project:pytorch",
+    "service:discourse"
+  ]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 3600
+    retry {
+      count    = 2
+      interval = 60000
+    }
+  }
+  request_definition {
+    host = "discuss.pytorch.org"
+    port = 443
+  }
+  assertion {
+    type     = "certificate"
+    operator = "isInMoreThan"
+    target   = 30
   }
 }
 
@@ -546,3 +588,5 @@ EOT
     code = file("scripts/check-long-queue-nvidia.js")
   }
 }
+
+
