@@ -546,3 +546,77 @@ EOT
     code = file("scripts/check-long-queue-nvidia.js")
   }
 }
+
+resource "datadog_synthetics_test" "pytorch-discourse-uptime" {
+  type    = "api"
+  name    = "Discourse Availability - discuss.pytorch.org"
+  message = <<EOT
+discuss.pytorch.org looks down or is returning non-200 responses.
+
+{{{synthetics.attributes.result.failure.message}}}
+
+@slack-pytorch-infra-alerts
+EOT
+  status  = "live"
+  tags = [
+    "env:project",
+    "project:pytorch",
+    "service:discourse"
+  ]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 300
+    retry {
+      count    = 2
+      interval = 60000
+    }
+    follow_redirects     = true
+    min_failure_duration = 120
+    min_location_failed  = 1
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://discuss.pytorch.org/"
+  }
+  assertion {
+    type     = "statusCode"
+    operator = "is"
+    target   = 200
+  }
+}
+
+resource "datadog_synthetics_test" "pytorch-discourse-certificate" {
+  type    = "api"
+  subtype = "ssl"
+  name    = "SSL Certificate Validity - discuss.pytorch.org"
+  message = <<EOT
+discuss.pytorch.org TLS certificate is close to expiring.
+
+{{{synthetics.attributes.result.failure.message}}}
+
+@slack-pytorch-infra-alerts
+EOT
+  status  = "live"
+  tags = [
+    "env:project",
+    "project:pytorch",
+    "service:discourse"
+  ]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 3600
+    retry {
+      count    = 2
+      interval = 60000
+    }
+  }
+  request_definition {
+    host = "discuss.pytorch.org"
+    port = 443
+  }
+  assertion {
+    type     = "certificate"
+    operator = "isInMoreThan"
+    target   = 30
+  }
+}
