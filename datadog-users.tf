@@ -47,6 +47,11 @@ locals {
       email    = "rgrigar@linuxfoundation.org"
       roles    = [data.datadog_role.admin_role.id]
       disabled = false
+    },
+    "raravena80" = {
+      email    = "raravena80@gmail.com"
+      roles    = [data.datadog_role.admin_role.id]
+      disabled = false
     }
   }
 
