@@ -50,7 +50,7 @@ locals {
     },
     "amdfaa" = {
       email    = "Faa.Diallo@amd.com"
-      roles    = [datadog_role.roles["custom-read-write"].id]
+      roles    = [data.datadog_role.custom-read-write.id]
       disabled = false
     }
   }
