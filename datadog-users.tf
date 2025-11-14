@@ -6,6 +6,11 @@
 data "datadog_role" "admin_role" {
   filter = "Datadog Admin Role"
 }
+
+data "datadog_role" "limited_read_write" {
+  filter = "Limited Read Write"
+}
+
 #Uncomment if you need to source other roles
 #data "datadog_role" "ro_role" {
 #  filter = "Datadog Read Only Role"
@@ -13,6 +18,7 @@ data "datadog_role" "admin_role" {
 #data "datadog_role" "standard_role" {
 #  filter = "Datadog Standard Role"
 #}
+
 
 # Create new user resources
 variable "dd_users" {
@@ -47,12 +53,12 @@ locals {
       email    = "rgrigar@linuxfoundation.org"
       roles    = [data.datadog_role.admin_role.id]
       disabled = false
-    } #,
-    #"amdfaa" = {
-    #  email    = "Faa.Diallo@linuxfoundation.org"
-    #  roles    = [datadog_role.roles["custom-read-write"].id]
-    #  disabled = false
-    #}
+    },
+    "amdfaa" = {
+      email    = "Faa.Diallo@amd.com"
+      roles    = [data.datadog_role.limited_read_write.id]
+      disabled = false
+    }
   }
 
   # Merge default users with any custom users provided via variable
