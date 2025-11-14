@@ -47,12 +47,12 @@ locals {
       email    = "rgrigar@linuxfoundation.org"
       roles    = [data.datadog_role.admin_role.id]
       disabled = false
-    },
-    "amdfaa" = {
-      email    = "Faa.Diallo@linuxfoundation.org"
-      roles    = [datadog_role.roles["custom-read-write"].id]
-      disabled = false
-    }
+    }#,
+    #"amdfaa" = {
+    #  email    = "Faa.Diallo@linuxfoundation.org"
+    #  roles    = [datadog_role.roles["custom-read-write"].id]
+    #  disabled = false
+    #}
   }
 
   # Merge default users with any custom users provided via variable
