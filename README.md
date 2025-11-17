@@ -22,7 +22,6 @@ This infrastructure-as-code setup manages:
 ## Table of Contents
 
 - [Overview](#overview)
-- [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
 - [Structure](#structure)
 - [Configuration](#configuration)
@@ -161,7 +160,7 @@ To add yourself with the "Limited Read Write" role, create or update your
 dd_users = {
   "your-username" = {
     email    = "your.email@example.com"
-    roles    = [datadog_role.roles["custom-read-write"].id]
+    roles    = [data.datadog_role.limited_read_write.id]
     disabled = false
   }
 }
@@ -174,12 +173,12 @@ dd_users = {
 dd_users = {
   "jane-smith" = {
     email    = "jane.smith@linuxfoundation.org"
-    roles    = [datadog_role.roles["custom-read-write"].id]
+    roles    = [data.datadog_role.limited_read_write.id]
     disabled = false
   },
   "john-doe" = {
     email    = "john.doe@contractor.com"
-    roles    = [datadog_role.roles["custom-read-write"].id]
+    roles    = [data.datadog_role.limited_read_write.id]
     disabled = false
   }
 }
@@ -214,17 +213,17 @@ You can add multiple users at once:
 dd_users = {
   "team-member-1" = {
     email    = "member1@example.com"
-    roles    = [datadog_role.roles["custom-read-write"].id]
+    roles    = [data.datadog_role.limited_read_write.id]
     disabled = false
   },
   "team-member-2" = {
     email    = "member2@example.com" 
-    roles    = [datadog_role.roles["custom-read-write"].id]
+    roles    = [data.datadog_role.limited_read_write.id]
     disabled = false
   },
   "contractor" = {
     email    = "contractor@external.com"
-    roles    = [datadog_role.roles["custom-read-write"].id]
+    roles    = [data.datadog_role.limited_read_write.id]
     disabled = false
   }
 }
@@ -264,138 +263,33 @@ dd_roles = {
 
 ### Synthetics website and API checks
 
-These lightweight API checks verify availability and basic correctness for
-public PyTorch properties every 5 minutes:
-
-- pytorch.org
-  - GET <https://pytorch.org> → status 200 and body contains
-    "Install PyTorch"
-  - Alerts: @slack-pytorch-infra-alerts
-
-- docs.pytorch.org
-  - GET <https://docs.pytorch.org/docs/stable/index.html> → status 200 and
-    body contains "PyTorch documentation"
-  - Alerts: @slack-pytorch-infra-alerts
-
-- pytorch.org/docs redirect
-  - GET <https://pytorch.org/docs> → status 301; headers:
-    - location is <https://docs.pytorch.org/docs>
-    - server is nginx
-  - Alerts: @slack-pytorch-infra-alerts
-
-- download.pytorch.org (CDN index)
-  - GET <https://download.pytorch.org/whl> → status 200 and body contains
-    "pytorch"
-  - Alerts: @slack-pytorch-infra-alerts
-
-- hud.pytorch.org
-  - GET <https://hud.pytorch.org> → status 200 and body contains
-    "pytorch/pytorch"
-  - Alerts: @slack-pytorch-infra-alerts
-
-- landscape.pytorch.org
-  - GET <https://landscape.pytorch.org> → status 200 and body contains
-    "landscape"
-  - Alerts: @slack-pytorch-infra-alerts
-
-- discuss.pytorch.org
-  - GET <https://discuss.pytorch.org> → status 200 and body contains
-    "PyTorch Forums"
-  - Alerts: @webhook-lf-incident-io (follow LF runbook)
-
-- dev-discuss.pytorch.org
-  - GET <https://dev-discuss.pytorch.org> → status 200 and body contains
-    "PyTorch releases"
-  - Alerts: @slack-pytorch-infra-alerts
-
-Cadence: tick_every = 300s; retries: 3 attempts, 300,000 ms interval.
+Synthetic API tests confirm that key PyTorch web properties stay reachable.
+The suite probes pytorch.org, docs, download, HUD, landscape, discuss, and
+dev-discuss every five minutes, alerting either @slack-pytorch-infra-alerts
+or the incident webhook when failures occur.
 
 ### GitHub ci-sev issues check
 
-Watches for open issues labeled "ci: sev" in pytorch/pytorch. Fails if any
-are found.
-
-- GET <https://github.com/pytorch/pytorch/issues?q=state%3Aopen%20label%3A%22ci%3A%20sev%22>
-- Expect status 200 and body contains "No results"
-- Alerts: @slack-pytorch-infra-alerts
-- Cadence: tick_every = 300s
+A lightweight synthetic check watches the `ci: sev` GitHub issue queue for
+pytorch/pytorch. Any open item triggers @slack-pytorch-infra-alerts so the
+team can triage quickly.
 
 ### Synthetics queue checks (scripts/)
 
-These API tests detect long GitHub Actions runner queues and alert Slack.
-
-How it works:
-
-- Each test calls the HUD endpoint
-  <https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D>
-- The script expects HTTP 200, parses JSON, and filters by machine_type
-  pattern
-- If any item exceeds a per-vendor queue time threshold, the test fails
-- On failure, the script logs a human message which is included in the
-  Datadog alert and sent to Slack
-
-Scripts and thresholds:
-
-- [check-long-queue-lf.js](./scripts/check-long-queue-lf.js)
-  - Filter: machine_type startsWith 'lf.'
-  - Threshold: > 10,800s (3h)
-
-- [check-long-queue-nvidia.js](./scripts/check-long-queue-nvidia.js)
-  - Filter: machine_type includes '.dgx.'
-  - Threshold: > 10,800s (3h)
-
-- [check-long-queue-rocm.js](./scripts/check-long-queue-rocm.js)
-  - Filter: machine_type includes '.rocm.'
-  - Threshold: > 14,400s (4h)
-
-- [check-long-queue-s390x.js](./scripts/check-long-queue-s390x.js)
-  - Filter: machine_type includes '.s390x'
-  - Threshold: > 7,200s (2h)
-
-- [check-long-queue-intel.js](./scripts/check-long-queue-intel.js)
-  - Filter: machine_type includes '.idc.'
-  - Threshold: > 10,800s (3h)
-
-- [check-long-queue-meta-h100.js](./scripts/check-long-queue-meta-h100.js)
-  - Filter: machine_type equals 'linux.aws.h100'
-  - Threshold: > 21,600s (6h)
-
-- [check-long-queue-meta.js](./scripts/check-long-queue-meta.js)
-  - Filter: excludes '.dgx.', '.rocm.', '.s390x', '^lf\\.', '^linux.aws.h100'
-  - Threshold: > 10,800s (3h)
-
-Example failure message (from script stderr):
-
-```text
-High queue detected for machine types containing .s390x: linux.s390x (7300s)
-```
+JavaScript assertions reusable across multiple synthetic tests flag when
+GitHub Actions runners stay queued too long. Each script filters for a
+vendor-specific `machine_type` pattern, compares queue age against the
+threshold defined in the script, and surfaces the human-friendly failure
+message in Slack. Sources: `scripts/check-long-queue-*.js`.
 
 ### Datadog monitors (ALI/GitHub API)
 
-Event and metric-based monitors supporting autoscaler and GitHub API health:
+Metric and event monitors provide coverage for:
+- Autoscaler dead-letter queues and validation exceptions
+- GitHub API rate spikes affecting autoscaling
 
-- ALI AutoScaler Dead Letter Queue High Number Of Messages
-  - Query: sum(last_5m):max:aws.sqs.number_of_messages_sent{
-    queuename:ghci-lf-queued-builds-dead-letter}.as_count() > 5000
-  - Thresholds: warning 1000; critical 5000
-  - Action: check scale-up logs; alerts to @webhook-lf-incident-io,
-    @slack-PyTorch-pytorch-infra-alerts, @slack-Linux_Foundation-pytorch-alerts
-
-- ALI ValidationException Detected
-  - Type: event-v2 alert on SNS event with title "ALI ValidationException
-    Detected" in last 5 minutes
-  - Critical when count > 0
-  - Action: review scale-up Lambda logs; possibly revert test-infra release
-  - Alerts: @slack-PyTorch-pytorch-infra-alerts,
-    @slack-Linux_Foundation-pytorch-alerts, @webhook-lf-incident-io
-
-- GitHub API usage unusually high
-  - Type: event-v2 alert on SNS event with title "GitHub API usage unusually
-    high" in last 5 minutes
-  - Critical when count > 0
-  - Action: review ALI rate limit metrics and API call counts
-  - Alerts: @slack-PyTorch-pytorch-infra-alerts,
-    @slack-Linux_Foundation-pytorch-alerts, @webhook-lf-incident-io
+Alerts post to `#pytorch-infra-alerts` and the incident webhook so on-call
+can jump straight to the relevant dashboards.
 
 [Back to top](#table-of-contents)
 
