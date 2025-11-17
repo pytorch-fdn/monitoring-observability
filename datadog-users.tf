@@ -55,7 +55,7 @@ locals {
       disabled = false
     },
     "amdfaa" = {
-      email    = "Faa.Diallo@amd.com"
+      email    = "faa.diallo@amd.com"
       roles    = [data.datadog_role.limited_read_write.id]
       disabled = false
     }
