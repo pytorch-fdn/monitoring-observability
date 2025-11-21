@@ -2,11 +2,43 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-dd.expect(dd.response.statusCode).to.equal(200);
-
 const MACHINE_TYPE_FILTER = 'linux.aws.h100';
 const jsonData = dd.response.body;
-const parsedData = JSON.parse(jsonData);
+
+// Check status code and provide helpful error message
+if (dd.response.statusCode !== 200) {
+  const errorMsg = `Unable to reach PyTorch HUD data source - received HTTP ${dd.response.statusCode} error. The HUD API may be experiencing issues.`;
+  console.error(errorMsg);
+  throw new Error(errorMsg);
+}
+
+let parsedData;
+let hudError = null;
+
+try {
+  parsedData = JSON.parse(jsonData);
+  
+  // Check if we got an error response instead of queue data
+  if (!Array.isArray(parsedData)) {
+    hudError = 'Unable to reach PyTorch HUD data source - received unexpected response format instead of queue data';
+  }
+  
+  // Validate that we have the expected structure
+  if (!hudError && parsedData.length > 0 && (!parsedData[0].machine_type || parsedData[0].avg_queue_s === undefined)) {
+    hudError = 'Unable to reach PyTorch HUD data source - received data without expected machine_type or avg_queue_s fields';
+  }
+} catch (error) {
+  if (error instanceof SyntaxError) {
+    hudError = 'Unable to reach PyTorch HUD data source - received invalid JSON response';
+  } else {
+    hudError = `Unable to reach PyTorch HUD data source - ${error.message}`;
+  }
+}
+
+if (hudError) {
+  console.error(hudError);
+  throw new Error(hudError);
+}
 
 const highQueueItems = parsedData
   .filter(item => item.machine_type === MACHINE_TYPE_FILTER && item.avg_queue_s > 21600)
