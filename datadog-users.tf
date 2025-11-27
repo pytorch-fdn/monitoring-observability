@@ -58,6 +58,11 @@ locals {
       email    = "faa.diallo@amd.com"
       roles    = [data.datadog_role.limited_read_write.id]
       disabled = false
+    },
+    "atalman" = {
+      email    = "atalman@meta.com"
+      roles    = [data.datadog_role.limited_read_write.id]
+      disabled = false
     }
   }
 
