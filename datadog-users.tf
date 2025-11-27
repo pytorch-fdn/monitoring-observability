@@ -59,6 +59,11 @@ locals {
       roles    = [data.datadog_role.limited_read_write.id]
       disabled = false
     }
+    "atalman" = {
+      email    = "atalman@meta.com"
+      roles    = [data.datadog_role.limited_read_write.id]
+      disabled = false
+    }
   }
 
   # Merge default users with any custom users provided via variable
