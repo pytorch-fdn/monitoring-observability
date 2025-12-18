@@ -53,7 +53,7 @@ if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
     .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for fast-scaling LF runners: ${machineDetails}. Expected: <15min`;
+  const message = `High queue detected for fast-scaling LF runners: ${machineDetails}. Expected: <2h`;
   console.error(message);
 }
 
