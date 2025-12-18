@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const EXCLUDED_MACHINE_PATTERNS = ['.dgx.', '.idc.', '.rocm.', '.s390x', '^lf\\.', '^linux.aws.h100'];
+const THRESHOLD = 21600;  // 6 hours (up from 4 hours)
 const jsonData = dd.response.body;
 
 // Check status code and provide helpful error message
@@ -47,12 +48,12 @@ const highQueueItems = parsedData
       pattern.startsWith('^') ?
         new RegExp(pattern).test(machineType) :
         machineType.includes(pattern)
-    ) && item.avg_queue_s > 14400;
+    ) && item.avg_queue_s > THRESHOLD;
   })
   .map(item => ({ machine_type: item.machine_type, avg_queue_s: item.avg_queue_s }));
 if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
-    .map(item => `${item.machine_type} (${item.avg_queue_s}s)`)
+    .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
   const message = `High queue detected for machine types: ${machineDetails}`;
   console.error(message);

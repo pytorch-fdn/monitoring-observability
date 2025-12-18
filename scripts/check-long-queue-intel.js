@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-const MACHINE_TYPE_FILTER = '.idc.';
+const MACHINE_TYPE_FILTER = 'includes';
+const THRESHOLD = 21600;
 const jsonData = dd.response.body;
 
 // Check status code and provide helpful error message
@@ -41,14 +42,14 @@ if (hudError) {
 }
 
 const highQueueItems = parsedData
-  .filter(item => item.machine_type.includes(MACHINE_TYPE_FILTER) && item.avg_queue_s > 14400)
+  .filter(item => item.machine_type.includes(MACHINE_TYPE_FILTER) && item.avg_queue_s > THRESHOLD)
   .map(item => ({ machine_type: item.machine_type, avg_queue_s: item.avg_queue_s }));
 
 if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
-    .map(item => `${item.machine_type} (${item.avg_queue_s}s)`)
+    .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for machine types containing ${MACHINE_TYPE_FILTER}: ${machineDetails}`;
+  const message = `High queue detected for .idc.: ${machineDetails}. machine types containing .idc.`;
   console.error(message);
 }
 

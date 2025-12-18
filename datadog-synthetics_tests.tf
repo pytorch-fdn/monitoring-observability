@@ -380,6 +380,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -413,6 +414,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -446,6 +448,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -479,6 +482,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -512,6 +516,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -545,6 +550,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -578,6 +584,7 @@ EOT
       count    = 3
       interval = 60000
     }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -590,3 +597,40 @@ EOT
 }
 
 
+
+resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-lf-memory" {
+  type      = "api"
+  name      = "GHA Runner Queue Check - LF Memory Runners"
+  message   = <<EOT
+Detected GitHub Runner Queue - LF Memory Runners (memory.ephemeral) has jobs waiting
+unusually long for runners (>16 hours).
+
+{{{synthetics.attributes.result.failure.message}}}
+
+These runners are chronically queued 11-14 hours normally. This alert indicates 
+they're significantly above baseline.
+
+Check https://hud.pytorch.org/metrics for more details.
+
+@slack-pytorch-infra-alerts
+EOT
+  status    = "live"
+  tags      = ["env:project", "project:pytorch", "service:gha-runners"]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300000 # 5 minutes between retries
+    }
+    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
+  }
+  request_definition {
+    method = "GET"
+    url    = "https://hud.pytorch.org/api/clickhouse/queued_jobs_by_label?parameters=%7B%7D"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-long-queue-lf-memory.js")
+  }
+}
