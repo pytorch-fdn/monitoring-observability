@@ -49,7 +49,7 @@ if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
     .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for .dgx.: ${machineDetails}. machine types containing .dgx.`;
+  const message = `High queue detected for machine types containing ".dgx.": ${machineDetails}`;
   console.error(message);
 }
 
