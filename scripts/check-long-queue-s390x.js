@@ -1,8 +1,8 @@
-// SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+// SPDX-FileCopyrightText: 2025 The Linux Foundation
 //
 // SPDX-License-Identifier: Apache-2.0
 
-const MACHINE_TYPE_FILTER = 'includes';
+const MACHINE_TYPE_FILTER = '.s390x';
 const THRESHOLD = 28800;
 const jsonData = dd.response.body;
 
