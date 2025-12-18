@@ -49,7 +49,7 @@ if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
     .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for .s390x: ${machineDetails}. machine types containing .s390x`;
+  const message = `High queue detected for .s390x machine types: ${machineDetails}`;
   console.error(message);
 }
 
