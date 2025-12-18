@@ -1,8 +1,9 @@
-// SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+// SPDX-FileCopyrightText: 2025 The Linux Foundation
 //
 // SPDX-License-Identifier: Apache-2.0
 
 const MACHINE_TYPE_FILTER = 'linux.aws.h100';
+const THRESHOLD = 28800;
 const jsonData = dd.response.body;
 
 // Check status code and provide helpful error message
@@ -41,14 +42,14 @@ if (hudError) {
 }
 
 const highQueueItems = parsedData
-  .filter(item => item.machine_type === MACHINE_TYPE_FILTER && item.avg_queue_s > 21600)
+  .filter(item => item.machine_type === MACHINE_TYPE_FILTER && item.avg_queue_s > THRESHOLD)
   .map(item => ({ machine_type: item.machine_type, avg_queue_s: item.avg_queue_s }));
 
 if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
-    .map(item => `${item.machine_type} (${item.avg_queue_s}s)`)
+    .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for machine type ${MACHINE_TYPE_FILTER}: ${machineDetails}`;
+  const message = `High queue detected for linux.aws.h100: ${machineDetails}`;
   console.error(message);
 }
 
