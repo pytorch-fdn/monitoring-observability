@@ -127,7 +127,8 @@ resource "datadog_synthetics_test" "pytorch-download" {
   }
   request_definition {
     method = "GET"
-    url    = "https://download.pytorch.org/whl/"
+    # Path /whl should redirect to -> /whl/ so if this fails the redirect may not be working.
+    url = "https://download.pytorch.org/whl"
   }
   assertion {
     type     = "statusCode"
