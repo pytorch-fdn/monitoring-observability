@@ -117,7 +117,7 @@ resource "datadog_synthetics_test" "pytorch-download" {
   message   = "Notify @slack-pytorch-infra-alerts download.pytorch.org is failing its monitor."
   status    = "live"
   tags      = ["env:project", "project:pytorch", "service:download"]
-  locations = ["aws:us-west-2"]
+  locations = ["cloudflare"]
   options_list {
     tick_every = 300
     retry {
@@ -127,7 +127,7 @@ resource "datadog_synthetics_test" "pytorch-download" {
   }
   request_definition {
     method = "GET"
-    url    = "https://download.pytorch.org/whl"
+    url    = "https://download.pytorch.org/whl/"
   }
   assertion {
     type     = "statusCode"
