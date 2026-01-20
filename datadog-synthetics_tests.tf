@@ -124,6 +124,8 @@ resource "datadog_synthetics_test" "pytorch-download" {
       count    = 3
       interval = 300000
     }
+
+    follow_redirects = true
   }
   request_definition {
     method = "GET"
