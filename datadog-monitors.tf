@@ -87,3 +87,31 @@ Review the rate limit metrics as well as API call count from the ALI for each AP
 @webhook-lf-incident-io
 EOT
 }
+
+###############################
+# download.pytorch.org 499s   #
+###############################
+
+resource "datadog_monitor" "download_pytorch_whl_499_spike" {
+  name    = "download.pytorch.org 499 spike"
+  type    = "log alert"
+  query   = <<-EOT
+    logs("service:cloudflare_pytorch_org @EdgeRequestHost:download*.pytorch.org @ClientRequestPath:/whl* @EdgeResponseStatus:499").rollup("count").last("1m") > 5
+  EOT
+  message = <<-MSG
+    More than five CloudFront 499 responses per minute are being served for download.pytorch.org /whl paths.
+
+    @slack-PyTorch-pytorch-infra-alerts
+  MSG
+
+  include_tags        = true
+  require_full_window = false
+
+  monitor_thresholds {
+    critical = 5
+  }
+
+  notify_audit    = false
+  notify_no_data  = false
+  renotify_interval = 0
+}
