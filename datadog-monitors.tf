@@ -111,7 +111,7 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
     critical = 5
   }
 
-  notify_audit    = false
-  notify_no_data  = false
+  notify_audit      = false
+  notify_no_data    = false
   renotify_interval = 0
 }
