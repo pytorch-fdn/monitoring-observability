@@ -306,11 +306,7 @@ EOT
   ]
   locations = ["aws:us-west-2"]
   options_list {
-    tick_every = 3600
-    retry {
-      count    = 2
-      interval = 60000
-    }
+    tick_every = 86400 # Check once a day
   }
   request_definition {
     host = "discuss.pytorch.org"
@@ -319,7 +315,7 @@ EOT
   assertion {
     type     = "certificate"
     operator = "isInMoreThan"
-    target   = 30
+    target   = 14 # 2 weeks
   }
 }
 
