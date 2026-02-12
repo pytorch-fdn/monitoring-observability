@@ -108,7 +108,7 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
   require_full_window = false
 
   monitor_thresholds {
-    critical = 5
+    critical = 50
   }
 
   notify_audit      = false
