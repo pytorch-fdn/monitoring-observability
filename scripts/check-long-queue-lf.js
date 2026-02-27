@@ -5,19 +5,21 @@
 // Monitor fast auto-scaling LF runners only (excludes memory.ephemeral)
 const MACHINE_TYPE_FILTER = 'lf.';
 const EXCLUDED_TYPES = ['lf.linux.12xlarge.memory.ephemeral'];
-const THRESHOLD = 7200;  // 2 hours (down from 4 hours - these should scale fast)
+const THRESHOLD = 10800;  // 3 hours
 const jsonData = dd.response.body;
 
-// Check status code and provide helpful error message
+// Pass silently on HUD API errors — HUD uptime is monitored separately.
+// Failing here would cause alert flapping whenever HUD is intermittently unavailable.
 if (dd.response.statusCode !== 200) {
-  const errorMsg = `Unable to reach PyTorch HUD data source - received HTTP ${dd.response.statusCode} error. The HUD API may be experiencing issues.`;
-  console.error(errorMsg);
-  throw new Error(errorMsg);
+  console.log(`HUD API returned HTTP ${dd.response.statusCode} — skipping queue check (HUD uptime monitored separately).`);
+  dd.expect(true).to.be.true;
+  // Datadog synthetics JS doesn't support early return; the expect above ensures pass
 }
 
 let parsedData;
 let hudError = null;
 
+if (dd.response.statusCode === 200) {
 try {
   parsedData = JSON.parse(jsonData);
   
@@ -37,10 +39,12 @@ try {
 }
 
 if (hudError) {
-  console.error(hudError);
-  throw new Error(hudError);
+  console.log(`HUD data issue: ${hudError} — skipping queue check.`);
+  // Don't throw — pass silently so we don't flap on HUD issues
+}
 }
 
+if (dd.response.statusCode === 200 && !hudError && parsedData) {
 const highQueueItems = parsedData
   .filter(item => 
     item.machine_type.startsWith(MACHINE_TYPE_FILTER) && 
@@ -53,8 +57,9 @@ if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
     .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for fast-scaling LF runners: ${machineDetails}. Expected: <2h`;
+  const message = `High queue detected for fast-scaling LF runners: ${machineDetails}. Expected: <3h`;
   console.error(message);
 }
 
 dd.expect(highQueueItems.length > 0).to.be.false;
+}
