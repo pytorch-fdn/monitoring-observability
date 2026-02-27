@@ -38,9 +38,9 @@ resource "datadog_monitor" "ALI_ValidationException_Detected" {
   monitor_thresholds {
     critical = 0
   }
-  name    = "ALI ValidationException Detected"
-  type    = "event-v2 alert"
-  query   = <<EOT
+  name              = "ALI ValidationException Detected"
+  type              = "event-v2 alert"
+  query             = <<EOT
 events("source:amazon_sns @title:\"ALI ValidationException Detected\"").rollup("count").last("15m") > 0
 EOT
   renotify_interval = 60
@@ -69,9 +69,9 @@ resource "datadog_monitor" "GitHub_API_usage_unusually_high" {
   monitor_thresholds {
     critical = 0
   }
-  name    = "GitHub API usage unusually high"
-  type    = "event-v2 alert"
-  query   = <<EOT
+  name              = "GitHub API usage unusually high"
+  type              = "event-v2 alert"
+  query             = <<EOT
 events("source:amazon_sns @title:\"GitHub API usage unusually high\"").rollup("count").last("15m") > 0
 EOT
   renotify_interval = 60
