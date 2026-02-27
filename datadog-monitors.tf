@@ -29,7 +29,6 @@ resource "datadog_monitor" "ci_retry_deadletter" {
 
   include_tags        = false
   on_missing_data     = "resolve"
-  notify_no_data      = false
   require_full_window = false
 }
 
