@@ -379,7 +379,7 @@ EOT
       count    = 3
       interval = 60000
     }
-    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
+    min_failure_duration = 3600 # 1 hour - require sustained failure before alerting
   }
   request_definition {
     method = "GET"
@@ -583,7 +583,7 @@ EOT
       count    = 3
       interval = 60000
     }
-    min_failure_duration = 1800 # 30 minutes - require sustained failure before alerting
+    min_failure_duration = 3600 # 1 hour - require sustained failure before alerting
   }
   request_definition {
     method = "GET"

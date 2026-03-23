@@ -19,7 +19,7 @@ resource "datadog_monitor" "ci_retry_deadletter" {
 
   type  = "query alert"
   query = <<-QUERY
-    sum(last_5m):max:aws.sqs.number_of_messages_sent{queuename:ghci-lf-queued-builds-dead-letter}.as_count() > 5000
+    sum(last_15m):max:aws.sqs.number_of_messages_sent{queuename:ghci-lf-queued-builds-dead-letter}.as_count() > 5000
   QUERY
 
   monitor_thresholds {
@@ -41,7 +41,7 @@ resource "datadog_monitor" "ALI_ValidationException_Detected" {
   name    = "ALI ValidationException Detected"
   type    = "event-v2 alert"
   query   = <<EOT
-events("source:amazon_sns @title:\"ALI ValidationException Detected\"").rollup("count").last("5m") > 0
+events("source:amazon_sns @title:\"ALI ValidationException Detected\"").rollup("count").last("15m") > 0
 EOT
   message = <<EOT
 # ValidationException
@@ -71,7 +71,7 @@ resource "datadog_monitor" "GitHub_API_usage_unusually_high" {
   name    = "GitHub API usage unusually high"
   type    = "event-v2 alert"
   query   = <<EOT
-events("source:amazon_sns @title:\"GitHub API usage unusually high\"").rollup("count").last("5m") > 0
+events("source:amazon_sns @title:\"GitHub API usage unusually high\"").rollup("count").last("15m") > 0
 EOT
   message = <<EOT
 # GitHub API usage is unusually high
@@ -96,10 +96,10 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
   name    = "download.pytorch.org 499 spike"
   type    = "log alert"
   query   = <<-EOT
-    logs("service:cloudflare_pytorch_org @EdgeRequestHost:download*.pytorch.org @ClientRequestPath:/whl* @EdgeResponseStatus:499").rollup("count").last("1m") > 50
+    logs("service:cloudflare_pytorch_org @EdgeRequestHost:download*.pytorch.org @ClientRequestPath:/whl* @EdgeResponseStatus:499").rollup("count").last("5m") > 250
   EOT
   message = <<-MSG
-    More than fifty CloudFront 499 responses per minute are being served for download.pytorch.org /whl paths.
+    More than 250 CloudFront 499 responses in 5 minutes are being served for download.pytorch.org /whl paths.
 
     @slack-PyTorch-pytorch-infra-alerts
   MSG
@@ -108,7 +108,7 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
   require_full_window = false
 
   monitor_thresholds {
-    critical = 50
+    critical = 250
   }
 
   notify_audit      = false
