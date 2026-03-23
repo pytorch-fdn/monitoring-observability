@@ -33,7 +33,7 @@ jobs:
     steps:
       # Git Checkout
       - name: Checkout Code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
 
@@ -42,7 +42,7 @@ jobs:
         id: ml
         # Use "cupcake" slim flavor which supports both Terraform and
         # Javascript.
-        uses: oxsecurity/megalinter/flavors/cupcake@bacb5f8674e3730b904ca4d20c8bd477bc51b1a7 # v7.13.0
+        uses: oxsecurity/megalinter/flavors/cupcake@8fbdead70d1409964ab3d5afa885e18ee85388bb # v9.4.0
         env:
           # All available variables are described in documentation
           # https://megalinter.io/configuration/
