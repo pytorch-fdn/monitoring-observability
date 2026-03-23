@@ -28,7 +28,7 @@ resource "datadog_monitor" "ci_retry_deadletter" {
   }
 
   include_tags        = false
-  on_missing_data     = "default"
+  on_missing_data     = "resolve"
   require_full_window = false
 }
 
@@ -38,12 +38,13 @@ resource "datadog_monitor" "ALI_ValidationException_Detected" {
   monitor_thresholds {
     critical = 0
   }
-  name    = "ALI ValidationException Detected"
-  type    = "event-v2 alert"
-  query   = <<EOT
+  name              = "ALI ValidationException Detected"
+  type              = "event-v2 alert"
+  query             = <<EOT
 events("source:amazon_sns @title:\"ALI ValidationException Detected\"").rollup("count").last("15m") > 0
 EOT
-  message = <<EOT
+  renotify_interval = 60
+  message           = <<EOT
 # ValidationException
 
 We've detected that a ValidationException has happened in the ALI. This could
@@ -68,12 +69,13 @@ resource "datadog_monitor" "GitHub_API_usage_unusually_high" {
   monitor_thresholds {
     critical = 0
   }
-  name    = "GitHub API usage unusually high"
-  type    = "event-v2 alert"
-  query   = <<EOT
+  name              = "GitHub API usage unusually high"
+  type              = "event-v2 alert"
+  query             = <<EOT
 events("source:amazon_sns @title:\"GitHub API usage unusually high\"").rollup("count").last("15m") > 0
 EOT
-  message = <<EOT
+  renotify_interval = 60
+  message           = <<EOT
 # GitHub API usage is unusually high
 
 We've detected that the GitHub API rate limit usage is higher than usual. This could be an indication of a problem in the ALI system causing higher than expected API calls.
@@ -108,10 +110,12 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
   require_full_window = false
 
   monitor_thresholds {
-    critical = 250
+    critical          = 250
+    critical_recovery = 100
   }
 
   notify_audit      = false
   notify_no_data    = false
   renotify_interval = 0
+  evaluation_delay  = 60
 }

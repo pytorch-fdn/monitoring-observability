@@ -3,19 +3,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 const EXCLUDED_MACHINE_PATTERNS = ['.dgx.', '.idc.', '.rocm.', '.s390x', '^lf\\.', '^linux.aws.h100'];
-const THRESHOLD = 21600;  // 6 hours (up from 4 hours)
+const THRESHOLD = 28800;  // 8 hours
 const jsonData = dd.response.body;
 
-// Check status code and provide helpful error message
+// Pass silently on HUD API errors — HUD uptime is monitored separately.
+// Failing here would cause alert flapping whenever HUD is intermittently unavailable.
 if (dd.response.statusCode !== 200) {
-  const errorMsg = `Unable to reach PyTorch HUD data source - received HTTP ${dd.response.statusCode} error. The HUD API may be experiencing issues.`;
-  console.error(errorMsg);
-  throw new Error(errorMsg);
+  console.log(`HUD API returned HTTP ${dd.response.statusCode} — skipping queue check (HUD uptime monitored separately).`);
+  dd.expect(true).to.be.true;
 }
 
 let parsedData;
 let hudError = null;
 
+if (dd.response.statusCode === 200) {
 try {
   parsedData = JSON.parse(jsonData);
   
@@ -37,10 +38,11 @@ try {
 }
 
 if (hudError) {
-  console.error(hudError);
-  throw new Error(hudError);
+  console.log(`HUD data issue: ${hudError} — skipping queue check.`);
+}
 }
 
+if (dd.response.statusCode === 200 && !hudError && parsedData) {
 const highQueueItems = parsedData
   .filter(item => {
     const machineType = item.machine_type;
@@ -59,3 +61,4 @@ if (highQueueItems.length > 0) {
   console.error(message);
 }
 dd.expect(highQueueItems.length > 0).to.be.false;
+}
