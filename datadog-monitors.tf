@@ -119,3 +119,41 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
   renotify_interval = 0
   evaluation_delay  = 60
 }
+
+############################
+# Stale EBS Volumes        #
+############################
+
+resource "datadog_monitor" "stale_ebs_volumes" {
+  name  = "Stale EBS Volume Detected (Available > 1 Month)"
+  type  = "query alert"
+  query = <<-EOT
+    min(last_1mo):max:aws.ebs.volume_idle_time{status:available} by {name,volumeid} >= 300
+  EOT
+
+  message = <<-MSG
+    An EBS volume has been in `available` (unattached) state with zero I/O
+    for over 1 month. This volume is likely unused and incurring unnecessary
+    costs.
+
+    **Volume:** {{name.name}} (`{{volumeid.name}}`)
+
+    ## Action
+
+    1. Verify the volume is no longer needed.
+    2. Snapshot the volume if data retention is required.
+    3. Delete the volume to stop incurring charges.
+
+    @slack-PyTorch-pytorch-infra-alerts
+  MSG
+
+  monitor_thresholds {
+    critical = 300
+  }
+
+  include_tags        = true
+  require_full_window = true
+  notify_no_data      = false
+  renotify_interval   = 10080
+  evaluation_delay    = 900
+}
