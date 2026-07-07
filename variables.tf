@@ -35,3 +35,9 @@ variable "incident_io_bearer" {
   type        = string
   sensitive   = true
 }
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token (Zone SSL and Certificates read) for the cert-pack validation monitor"
+  type        = string
+  sensitive   = true
+}
