@@ -349,7 +349,7 @@ resource "datadog_synthetics_test" "pytorch-cloudflare-cert-pack-validation" {
   name    = "Cloudflare Cert Pack Validation - pytorch.org"
   message = <<EOT
 A Cloudflare SSL certificate pack for pytorch.org has been stuck in
-`pending_validation` for over 6 hours. Domain Control Validation (DCV) likely
+`pending_validation` for over 2 hours. Domain Control Validation (DCV) likely
 needs manual attention before the current certificate expires.
 
 {{{synthetics.attributes.result.failure.message}}}
@@ -371,7 +371,7 @@ EOT
       count    = 2
       interval = 60000
     }
-    min_failure_duration = 21600 # 6 hours sustained before alerting
+    min_failure_duration = 7200 # 2 hours sustained (Datadog max) before alerting
   }
   request_definition {
     method = "GET"
