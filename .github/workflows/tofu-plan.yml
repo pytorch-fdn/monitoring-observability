@@ -32,3 +32,4 @@ jobs:
         datadog_api_key = "${{ secrets.DD_API_KEY }}"
         datadog_app_key = "${{ secrets.DD_APP_KEY }}"
         incident_io_bearer = "${{ secrets.INCIDENT_IO_BEARER }}"
+        cloudflare_api_token = "${{ secrets.CLOUDFLARE_API_TOKEN }}"

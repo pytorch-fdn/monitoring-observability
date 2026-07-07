@@ -2,6 +2,20 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+##############################
+# Synthetics global variables #
+##############################
+
+# Cloudflare API token (Zone SSL and Certificates read), stored securely so it
+# is not exposed in the test definition. Referenced from request headers as
+# {{ CLOUDFLARE_CERT_MONITOR_TOKEN }}.
+resource "datadog_synthetics_global_variable" "cloudflare_api_token" {
+  name        = "CLOUDFLARE_CERT_MONITOR_TOKEN"
+  description = "Cloudflare API token used by the cert-pack validation synthetic"
+  value       = var.cloudflare_api_token
+  secure      = true
+}
+
 ###############
 # pytorch.org #
 ###############
@@ -317,6 +331,61 @@ EOT
     operator = "isInMoreThan"
     target   = 14 # 2 weeks
   }
+}
+
+#######################################
+# Cloudflare cert pack validation     #
+#######################################
+
+# The SSL expiry check above only sees the cert currently served on the TLS
+# handshake. It cannot detect a Cloudflare certificate pack stuck in
+# `pending_validation` (a control-plane state) - the zone keeps serving the old
+# cert while a renewal hangs on DCV, so the problem is invisible until the old
+# cert expires. This polls the Cloudflare API for the pytorch.org zone and
+# alerts if a pack is stuck in pending_validation. The JS assertion passes
+# silently on API/auth errors so transient Cloudflare blips do not flap.
+resource "datadog_synthetics_test" "pytorch-cloudflare-cert-pack-validation" {
+  type    = "api"
+  name    = "Cloudflare Cert Pack Validation - pytorch.org"
+  message = <<EOT
+A Cloudflare SSL certificate pack for pytorch.org has been stuck in
+`pending_validation` for over 6 hours. Domain Control Validation (DCV) likely
+needs manual attention before the current certificate expires.
+
+{{{synthetics.attributes.result.failure.message}}}
+
+Check https://dash.cloudflare.com/b4dc0b11b9b6dd2e1aefe2f863dd9ff2/c01d68aab624245a1dd5f53bb09d4c6a/ssl-tls/edge-certificates
+
+@slack-pytorch-infra-alerts
+EOT
+  status  = "live"
+  tags = [
+    "env:project",
+    "project:pytorch",
+    "service:ssl"
+  ]
+  locations = ["aws:us-west-2"]
+  options_list {
+    tick_every = 3600 # hourly
+    retry {
+      count    = 2
+      interval = 60000
+    }
+    min_failure_duration = 21600 # 6 hours sustained before alerting
+  }
+  request_definition {
+    method = "GET"
+    # pytorch.org zone
+    url = "https://api.cloudflare.com/client/v4/zones/c01d68aab624245a1dd5f53bb09d4c6a/ssl/certificate_packs?status=all"
+  }
+  request_headers = {
+    Authorization = "Bearer {{ CLOUDFLARE_CERT_MONITOR_TOKEN }}"
+  }
+  assertion {
+    type = "javascript"
+    code = file("scripts/check-cert-pack-validation.js")
+  }
+  depends_on = [datadog_synthetics_global_variable.cloudflare_api_token]
 }
 
 ###############
