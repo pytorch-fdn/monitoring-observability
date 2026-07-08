@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# Runs a read-only Terraform plan for pull requests opened from FORKS.
+#
+# Why this is separate from tofu-plan.yml:
+#   Fork `pull_request` runs get no secrets and no OIDC token, so they
+#   cannot plan. `pull_request_target` runs in the base-repo context (with
+#   secrets/OIDC), but the workflow definition always comes from the base
+#   branch, so a fork cannot alter what runs here.
+#
+# Why this is safe:
+#   `terraform plan` on untrusted fork code is effectively arbitrary code
+#   execution (external data sources, module source URLs, etc.). The job is
+#   bound to the `fork-plan` GitHub Environment, which is configured with
+#   REQUIRED REVIEWERS. Nothing below runs until a maintainer has reviewed
+#   the PR diff and approved. Even then it assumes terraform-plan-oidc, a
+#   read-only role that cannot deploy or write state.
+#
+# IMPORTANT: the `fork-plan` environment MUST have required reviewers before
+# this workflow is merged, otherwise fork code would run un-gated. See the
+# accompanying PR description for setup.
+
+name: "Tofu Plan (fork)"
+
+on:
+  - pull_request_target
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform_plan_fork:
+    name: "Tofu Plan (fork)"
+    # Forked PRs only; same-repo PRs are handled by tofu-plan.yml.
+    if: ${{ github.event.pull_request.head.repo.fork == true }}
+    uses: ./.github/workflows/opentofu-plan.yml
+    with:
+      # GitHub Environment used purely for the required-reviewers gate.
+      environment: fork-plan
+      # OpenTofu workspace to target the existing prod state.
+      opentofu_workspace: prod
+      # Check out the PR head so the plan reflects the proposed change.
+      # Only safe because `fork-plan` requires maintainer approval first.
+      ref: ${{ github.event.pull_request.head.sha }}
+      # Read-only role: can read state and post a plan, cannot deploy.
+      oidc_role_arn: arn:aws:iam::391835788720:role/terraform-plan-oidc
+      opentofu_backend_config: |
+        bucket=opentofu-state-pytorch-datadog
+        dynamodb_table=opentofu-state-pytorch-datadog
+    secrets:
+      env_secret: |
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+      # Datadog READ-ONLY keys: needed to refresh/read existing resources
+      # during plan. Do not use the read/write DD_API_KEY / DD_APP_KEY here.
+      # incident_io_bearer and cloudflare_api_token are not required to
+      # compute the plan (cloudflare_api_token is write-only), so pass
+      # placeholders to avoid exposing real secrets to checked-out fork code.
+      opentofu_secret_variables: |
+        datadog_api_key = "${{ secrets.DD_API_KEY_RO }}"
+        datadog_app_key = "${{ secrets.DD_APP_KEY_RO }}"
+        incident_io_bearer = "unused-in-fork-plan"
+        cloudflare_api_token = "unused-in-fork-plan"

@@ -40,6 +40,11 @@ on:
         required: false
         default: 'true'
         type: string
+      ref:
+        description: 'Git ref/SHA to check out. Empty uses the default checkout ref. Set to the PR head SHA for pull_request_target fork plans.'
+        required: false
+        default: ''
+        type: string
       oidc_role_arn:
         description: 'ARN of the IAM role to assume with OIDC'
         required: false
@@ -103,6 +108,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: ${{ inputs.ref }}
 
       - name: Set Environment Variables
         id: set-env

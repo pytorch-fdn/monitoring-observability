@@ -15,6 +15,9 @@ permissions:
 jobs:
   terraform_plan:
     name: "Tofu Plan"
+    # Same-repo PRs only. Forks have no access to secrets/OIDC here and are
+    # handled by tofu-plan-fork.yml (gated pull_request_target).
+    if: ${{ github.event.pull_request.head.repo.fork == false }}
     strategy:
       matrix:
         environment:
