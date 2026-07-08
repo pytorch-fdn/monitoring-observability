@@ -10,10 +10,11 @@
 # is not exposed in the test definition. Referenced from request headers as
 # {{ CLOUDFLARE_CERT_MONITOR_TOKEN }}.
 resource "datadog_synthetics_global_variable" "cloudflare_api_token" {
-  name        = "CLOUDFLARE_CERT_MONITOR_TOKEN"
-  description = "Cloudflare API token used by the cert-pack validation synthetic"
-  value       = var.cloudflare_api_token
-  secure      = true
+  name             = "CLOUDFLARE_CERT_MONITOR_TOKEN"
+  description      = "Cloudflare API token used by the cert-pack validation synthetic"
+  value_wo         = var.cloudflare_api_token
+  value_wo_version = 1
+  secure           = true
 }
 
 ###############
