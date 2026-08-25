@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -17,9 +18,15 @@ permissions:
 jobs:
   terraform_apply_prod:
     name: "Tofu Apply - Prod"
+    # Dispatch can target any branch; only apply from main.
+    if: ${{ github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/opentofu-apply.yml
     with:
       environment: prod
+      # workflow_dispatch is not a PR event, so dflook cannot fetch a
+      # reviewed plan from a PR comment. Generate and apply a fresh plan
+      # of main instead. Merge-to-main keeps auto_approve false.
+      opentofu_auto_approve: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
       opentofu_backend_config: |
         bucket=opentofu-state-pytorch-datadog
         dynamodb_table=opentofu-state-pytorch-datadog
