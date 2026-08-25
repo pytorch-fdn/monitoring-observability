@@ -68,6 +68,11 @@ locals {
       email    = "daniel.wang@amd.com"
       roles    = [data.datadog_role.limited_read_write.id]
       disabled = false
+    },
+    "nsb" = {
+      email    = "niles.burbank@amd.com"
+      roles    = [data.datadog_role.limited_read_write.id]
+      disabled = false
     }
   }
 
