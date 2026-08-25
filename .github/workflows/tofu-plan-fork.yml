@@ -48,6 +48,11 @@ jobs:
       ref: ${{ github.event.pull_request.head.sha }}
       # Read-only role: can read state and post a plan, cannot deploy.
       oidc_role_arn: arn:aws:iam::391835788720:role/terraform-plan-oidc
+      # Use the ambient terraform-plan-oidc credentials directly. The default
+      # provider assume_role hops into terraform-deploy-oidc, which this
+      # read-only role cannot (and must not) assume.
+      opentofu_variables: |
+        provider_skip_assume_role = true
       opentofu_backend_config: |
         bucket=opentofu-state-pytorch-datadog
         dynamodb_table=opentofu-state-pytorch-datadog
