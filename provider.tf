@@ -20,6 +20,17 @@ variable "provider_assume_role_ci" {
   }
 }
 
+# Skip the provider's nested assume_role and use the ambient credentials
+# instead. Used by gated fork plans, which run as the read-only
+# terraform-plan-oidc role: that role deliberately cannot assume the
+# terraform-deploy-oidc role, and the only AWS call the config makes is the
+# unprivileged aws_caller_identity data source, so no role hop is needed.
+variable "provider_skip_assume_role" {
+  description = "Skip the AWS provider assume_role and use ambient credentials (gated fork plans running as terraform-plan-oidc)"
+  type        = bool
+  default     = false
+}
+
 # Pick the right IAM role based on the run_manually flag
 locals {
   role_to_assume = var.run_manually ? var.provider_assume_role[terraform.workspace] : var.provider_assume_role_ci[terraform.workspace]
@@ -29,9 +40,12 @@ locals {
 provider "aws" {
   region = "us-west-2"
 
-  assume_role {
-    role_arn     = local.role_to_assume
-    session_name = "terraform"
+  dynamic "assume_role" {
+    for_each = var.provider_skip_assume_role ? [] : [1]
+    content {
+      role_arn     = local.role_to_assume
+      session_name = "terraform"
+    }
   }
 
   default_tags {
