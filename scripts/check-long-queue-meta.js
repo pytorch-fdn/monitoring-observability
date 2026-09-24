@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-const EXCLUDED_MACHINE_PATTERNS = ['.dgx.', '.idc.', '.rocm.', '.s390x', '^lf\\.', '^linux.aws.h100'];
+const EXCLUDED_MACHINE_PATTERNS = ['.dgx.', '.idc.', '.rocm.', '.s390x', '^lf\\.', '^lf-', '^linux.aws.h100'];
 const THRESHOLD = 28800;  // 8 hours
 const jsonData = dd.response.body;
 

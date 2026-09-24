@@ -432,7 +432,8 @@ resource "datadog_synthetics_test" "pytorch-gha-runners-queue-check-lf" {
   name      = "GHA Runner Queue Check - Linux Foundation Runners"
   message   = <<EOT
 Detected GitHub Runner Queue - Linux Foundation Runners has jobs waiting
-unusually long for runners.
+unusually long for runners. Covers legacy EC2 ('lf.') and OSDC ARC ('lf-',
+pytorch/ci-infra osdc) LF-operated runners.
 
 {{{synthetics.attributes.result.failure.message}}}
 
