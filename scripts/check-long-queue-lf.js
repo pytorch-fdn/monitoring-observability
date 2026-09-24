@@ -2,8 +2,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-// Monitor fast auto-scaling LF runners only (excludes memory.ephemeral)
-const MACHINE_TYPE_FILTER = 'lf.';
+// Monitor fast auto-scaling LF runners (legacy 'lf.' EC2 and OSDC 'lf-' ARC;
+// excludes memory.ephemeral)
+const MACHINE_TYPE_PREFIXES = ['lf.', 'lf-'];
 const EXCLUDED_TYPES = ['lf.linux.12xlarge.memory.ephemeral'];
 const THRESHOLD = 10800;  // 3 hours
 const jsonData = dd.response.body;
@@ -46,8 +47,8 @@ if (hudError) {
 
 if (dd.response.statusCode === 200 && !hudError && parsedData) {
 const highQueueItems = parsedData
-  .filter(item => 
-    item.machine_type.startsWith(MACHINE_TYPE_FILTER) && 
+  .filter(item =>
+    MACHINE_TYPE_PREFIXES.some(prefix => item.machine_type.startsWith(prefix)) &&
     !EXCLUDED_TYPES.includes(item.machine_type) &&
     item.avg_queue_s > THRESHOLD
   )
@@ -57,7 +58,7 @@ if (highQueueItems.length > 0) {
   const machineDetails = highQueueItems
     .map(item => `${item.machine_type} (${(item.avg_queue_s / 3600).toFixed(1)}h)`)
     .join(', ');
-  const message = `High queue detected for fast-scaling LF runners: ${machineDetails}. Expected: <3h`;
+  const message = `High queue detected for LF runners (EC2 + OSDC): ${machineDetails}. Expected: <3h`;
   console.error(message);
 }
 
