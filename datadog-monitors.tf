@@ -119,3 +119,44 @@ resource "datadog_monitor" "download_pytorch_whl_499_spike" {
   renotify_interval = 0
   evaluation_delay  = 60
 }
+
+###############################
+# OSDC LF EKS clusters        #
+###############################
+
+resource "datadog_monitor" "osdc_lf_apiserver_throttling" {
+  name    = "OSDC {{clustername.name}} EKS API server throttling (HTTP 429)"
+  type    = "query alert"
+  query   = <<-EOT
+    sum(last_15m):sum:aws.eks.apiserver_request_total_429{clustername:lf-prod-aws-*} by {clustername}.as_count() > 5000
+  EOT
+  message = <<-MSG
+    # EKS API server throttling on {{clustername.name}}
+
+    The EKS API server for {{clustername.name}} is rejecting a high number of
+    requests with HTTP 429 (too many requests).
+
+    ## Action
+
+    1. Check for nodes stuck on node-init startup taints:
+
+       `kubectl get nodes -o json | jq -r '.items[] | select([.spec.taints[]?.key] | any(startswith("node-init.osdc.io/") and . != "node-init.osdc.io/hf-cache")) | .metadata.name'`
+
+    2. Delete the NodeClaim of any node still listed 15 minutes after the
+       throttling stops.
+
+    @slack-PyTorch-pytorch-infra-alerts
+    @slack-Linux_Foundation-pytorch-infra
+    @webhook-lf-incident-io
+  MSG
+
+  monitor_thresholds {
+    warning  = 1000
+    critical = 5000
+  }
+
+  include_tags        = true
+  require_full_window = false
+  on_missing_data     = "resolve"
+  renotify_interval   = 60
+}
